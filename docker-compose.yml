@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  infokurort:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: infokurort
+    restart: unless-stopped
+    ports:
+      - "3001:80"  # Внешний порт:Внутренний порт
+    networks:
+      - web
+
+networks:
+  web:
+    external: false
