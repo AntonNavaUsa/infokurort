@@ -9,7 +9,7 @@ cd /var/www/infokurort
 
 # Остановка контейнера
 echo "⏹️  Stopping container..."
-docker-compose down
+docker compose down
 
 # Получение последних изменений
 echo "📥 Pulling latest changes..."
@@ -17,11 +17,11 @@ git pull origin main
 
 # Сборка нового образа
 echo "🔨 Building Docker image..."
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # Запуск контейнера
 echo "▶️  Starting container..."
-docker-compose up -d
+docker compose up -d
 
 # Очистка старых образов
 echo "🧹 Cleaning up old images..."
