@@ -28,7 +28,8 @@ const Index = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="p-6 rounded-xl bg-background/80 border-2 border-primary/30 shadow-lg hover:shadow-xl transition-shadow">
                     <p className="font-semibold text-xl text-foreground mb-3">Красная Поляна</p>
-                    <p className="text-2xl text-primary font-bold">26 декабря 2025</p>
+                    <p className="text-2xl text-green-600 font-bold">26 декабря 2025 🎉</p>
+                    <p className="text-sm text-muted-foreground text-green-600 font-bold mt-2">*Доступна только зона "Цирк-2"</p>
                   </div>
                   <div className="p-6 rounded-xl bg-background/80 border-2 border-glacier/30 shadow-lg hover:shadow-xl transition-shadow">
                     <p className="font-semibold text-xl text-foreground mb-3">Роза Хутор</p>
@@ -36,7 +37,7 @@ const Index = () => {
                   </div>
                   <div className="p-6 rounded-xl bg-background/80 border-2 border-sunset/30 shadow-lg hover:shadow-xl transition-shadow">
                     <p className="font-semibold text-xl text-foreground mb-3">Газпром</p>
-                    <p className="text-lg text-sunset font-semibold">Ориентировочно<br/>29-30 декабря</p>
+                    <p className="text-2xl text-glacier font-bold">30 декабря</p>
                   </div>
                 </div>
               </div>

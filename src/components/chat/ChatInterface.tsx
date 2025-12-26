@@ -33,6 +33,7 @@ export function ChatInterface() {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -40,8 +41,10 @@ export function ChatInterface() {
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (hasInteracted) {
+      scrollToBottom();
+    }
+  }, [messages, hasInteracted]);
 
   const getResponse = (text: string): string => {
     const lower = text.toLowerCase();
@@ -54,6 +57,8 @@ export function ChatInterface() {
   const handleSubmit = async (text: string) => {
     if (!text.trim()) return;
 
+    setHasInteracted(true);
+    
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
