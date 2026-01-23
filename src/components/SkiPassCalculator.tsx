@@ -34,14 +34,27 @@ import {
   periodInfo
 } from "@/data/skiPassPricing";
 
-export function SkiPassCalculator() {
-  const [resort, setResort] = useState<Resort>('gazprom');
+interface SkiPassCalculatorProps {
+  defaultResort?: Resort;
+  onResortChange?: (resort: Resort) => void;
+}
+
+export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }: SkiPassCalculatorProps) {
+  const [resort, setResort] = useState<Resort>(defaultResort);
   const [skiPassCategory, setSkiPassCategory] = useState<SkiPassCategory>('single-day');
   const [passType, setPassType] = useState<PassType>('full');
   const [rosaPassType, setRosaPassType] = useState<RosaPassType>('standard');
   const [ageCategory, setAgeCategory] = useState<AgeCategory>('adult');
   const [date, setDate] = useState<Date>(new Date('2026-02-01'));
   const [multiDays, setMultiDays] = useState<number>(2);
+
+  // Вызываем callback при изменении курорта
+  const handleResortChange = (newResort: Resort) => {
+    setResort(newResort);
+    if (onResortChange) {
+      onResortChange(newResort);
+    }
+  };
 
   const period = resort === 'gazprom' ? getPeriodByDate(date) : getRosaPeriodByDate(date);
   
@@ -82,7 +95,7 @@ export function SkiPassCalculator() {
         {/* Выбор курорта */}
         <div className="space-y-3">
           <Label className="text-base font-semibold">Курорт</Label>
-          <RadioGroup value={resort} onValueChange={(value) => setResort(value as Resort)}>
+          <RadioGroup value={resort} onValueChange={(value) => handleResortChange(value as Resort)}>
             {(Object.keys(resortNames) as Resort[]).map((res) => (
               <div
                 key={res}
