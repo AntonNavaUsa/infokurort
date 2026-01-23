@@ -88,6 +88,166 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
     totalPrice = price;
   }
 
+  // Функция для получения сравнительных цен на других курортах
+  const getComparativePrices = () => {
+    const comparisons: Array<{ resort: Resort; price: number | null; description: string }> = [];
+    
+    // Определяем категорию для Красной Поляны (там нет youth)
+    const krasnayaPolyanaAge: AgeCategory = ageCategory === 'youth' ? 'adult' : ageCategory;
+
+    if (resort === 'gazprom') {
+      // Сравниваем Газпром с другими курортами
+      if (skiPassCategory === 'single-day') {
+        // Роза Хутор - стандартный однодневный
+        const rosaPrice = getRosaHutorPrice(date, 'standard');
+        comparisons.push({ 
+          resort: 'rosa-khutor', 
+          price: rosaPrice, 
+          description: 'Стандартный (1 день)' 
+        });
+        
+        // Красная Поляна - дневной однодневный
+        const kpPrice = getKrasnayaPolyanaPrice('day', 1, krasnayaPolyanaAge);
+        comparisons.push({ 
+          resort: 'krasnaya-polyana', 
+          price: kpPrice, 
+          description: 'Дневной (1 день)' 
+        });
+      } else if (skiPassCategory === 'multi-day') {
+        // Для многодневных сравниваем только Красную Поляну
+        if (multiDays <= 5) {
+          const kpPrice = getKrasnayaPolyanaPrice('day', multiDays, krasnayaPolyanaAge);
+          comparisons.push({ 
+            resort: 'krasnaya-polyana', 
+            price: kpPrice, 
+            description: `Дневной (${multiDays} ${multiDays === 1 ? 'день' : multiDays < 5 ? 'дня' : 'дней'})` 
+          });
+        }
+      } else if (skiPassCategory === 'seasonal') {
+        // Сезонные пассы
+        const rosaPrice = getRosaHutorPrice(date, 'seasonal');
+        comparisons.push({ 
+          resort: 'rosa-khutor', 
+          price: rosaPrice, 
+          description: 'Сезонный' 
+        });
+        
+        const kpPrice = getKrasnayaPolyanaPrice('seasonal', 1, krasnayaPolyanaAge);
+        comparisons.push({ 
+          resort: 'krasnaya-polyana', 
+          price: kpPrice, 
+          description: 'Сезонный' 
+        });
+      }
+    } else if (resort === 'rosa-khutor') {
+      // Сравниваем Роза Хутор с другими
+      if (rosaPassType === 'standard') {
+        // Газпром - полный однодневный
+        const gazpromPrice = getSkiPassPrice(date, 'full', ageCategory);
+        comparisons.push({ 
+          resort: 'gazprom', 
+          price: gazpromPrice, 
+          description: 'Полный (1 день)' 
+        });
+        
+        // Красная Поляна - дневной
+        const kpPrice = getKrasnayaPolyanaPrice('day', 1, krasnayaPolyanaAge);
+        comparisons.push({ 
+          resort: 'krasnaya-polyana', 
+          price: kpPrice, 
+          description: 'Дневной (1 день)' 
+        });
+      } else if (rosaPassType === 'seasonal') {
+        // Сезонные
+        const gazpromPrice = getSeasonalPrice('full', ageCategory);
+        comparisons.push({ 
+          resort: 'gazprom', 
+          price: gazpromPrice, 
+          description: 'Сезонный полный' 
+        });
+        
+        const kpPrice = getKrasnayaPolyanaPrice('seasonal', 1, krasnayaPolyanaAge);
+        comparisons.push({ 
+          resort: 'krasnaya-polyana', 
+          price: kpPrice, 
+          description: 'Сезонный' 
+        });
+      } else if (rosaPassType === 'evening') {
+        // Вечерние пассы
+        const kpPrice = getKrasnayaPolyanaPrice('evening', 1, krasnayaPolyanaAge);
+        comparisons.push({ 
+          resort: 'krasnaya-polyana', 
+          price: kpPrice, 
+          description: 'Вечерний (1 день)' 
+        });
+        
+        const gazpromPrice = getSkiPassPrice(date, 'evening-laura', ageCategory);
+        comparisons.push({ 
+          resort: 'gazprom', 
+          price: gazpromPrice, 
+          description: 'Вечерний Лаура' 
+        });
+      }
+    } else if (resort === 'krasnaya-polyana') {
+      // Сравниваем Красную Поляну с другими
+      if (krasnayaPolyanaPassType === 'day') {
+        // Газпром - полный
+        const gazpromPrice = multiDays === 1 
+          ? getSkiPassPrice(date, 'full', ageCategory)
+          : getMultiDayPrice(date, 'full', multiDays);
+        comparisons.push({ 
+          resort: 'gazprom', 
+          price: gazpromPrice, 
+          description: multiDays === 1 ? 'Полный (1 день)' : `Полный (${multiDays} ${multiDays < 5 ? 'дня' : 'дней'})` 
+        });
+        
+        // Роза Хутор - стандартный (только для 1 дня)
+        if (multiDays === 1) {
+          const rosaPrice = getRosaHutorPrice(date, 'standard');
+          comparisons.push({ 
+            resort: 'rosa-khutor', 
+            price: rosaPrice, 
+            description: 'Стандартный (1 день)' 
+          });
+        }
+      } else if (krasnayaPolyanaPassType === 'evening') {
+        // Вечерние
+        const rosaPrice = getRosaHutorPrice(date, 'evening');
+        comparisons.push({ 
+          resort: 'rosa-khutor', 
+          price: rosaPrice, 
+          description: 'Вечерний' 
+        });
+        
+        const gazpromPrice = getSkiPassPrice(date, 'evening-laura', ageCategory);
+        comparisons.push({ 
+          resort: 'gazprom', 
+          price: gazpromPrice, 
+          description: 'Вечерний Лаура' 
+        });
+      } else if (krasnayaPolyanaPassType === 'seasonal') {
+        // Сезонные
+        const gazpromPrice = getSeasonalPrice('full', ageCategory);
+        comparisons.push({ 
+          resort: 'gazprom', 
+          price: gazpromPrice, 
+          description: 'Сезонный полный' 
+        });
+        
+        const rosaPrice = getRosaHutorPrice(date, 'seasonal');
+        comparisons.push({ 
+          resort: 'rosa-khutor', 
+          price: rosaPrice, 
+          description: 'Сезонный' 
+        });
+      }
+    }
+
+    return comparisons.filter(c => c.price !== null);
+  };
+
+  const comparativePrices = getComparativePrices();
+
   return (
     <Card className="p-6 bg-gradient-to-br from-blue-500/5 via-background to-sky-400/5 border-2 border-blue-500/20">
       <div className="flex items-center gap-3 mb-6">
@@ -483,6 +643,31 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
             {resort === 'krasnaya-polyana' && (krasnayaPolyanaPassType === 'seasonal' || krasnayaPolyanaPassType === 'seasonal-evening') && <p>✓ Именной, неограниченное катание весь сезон</p>}
           </div>
         </div>
+
+        {/* Сравнительная таблица */}
+        {comparativePrices.length > 0 && (
+          <div className="mt-4 pt-4 border-t">
+            <h4 className="font-semibold mb-3 text-sm flex items-center gap-2">
+              <span>Сравнение с другими курортами</span>
+            </h4>
+            <div className="space-y-2">
+              {comparativePrices.map((comp, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg text-sm">
+                  <div className="flex-1">
+                    <div className="font-medium">{resortNames[comp.resort]}</div>
+                    <div className="text-xs text-muted-foreground">{comp.description}</div>
+                  </div>
+                  <div className="font-bold text-base">
+                    {comp.price ? `${comp.price.toLocaleString('ru-RU')} ₽` : 'Н/Д'}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              * Цены указаны для аналогичных условий (дата, категория)
+            </p>
+          </div>
+        )}
       </div>
     );
   }
