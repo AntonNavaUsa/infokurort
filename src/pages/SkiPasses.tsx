@@ -21,8 +21,8 @@ const SkiPasses = () => {
             Абонементы на подъёмники
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Выберите подходящий ски-пасс для катания на курорте Газпром Поляна. 
-            Склоны Лаура и Альпика ждут вас!
+            Выберите подходящий ски-пасс для катания на курорте Газпром Поляна: 
+            однодневные, многодневные или сезонные абонементы. Склоны Лаура и Альпика ждут вас!
           </p>
         </div>
 
@@ -82,6 +82,30 @@ const SkiPasses = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
+                  <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                    <div className="font-semibold text-sm mb-1 text-green-700 dark:text-green-400">Однодневные</div>
+                    <div className="text-xs text-muted-foreground">
+                      Абонемент на 1 день катания. Выберите дату и тип склона.
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                    <div className="font-semibold text-sm mb-1 text-blue-700 dark:text-blue-400">Многодневные (2-7 дней)</div>
+                    <div className="text-xs text-muted-foreground">
+                      Абонемент на несколько дней катания в любые дни периода действия. Выгоднее однодневных!
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                    <div className="font-semibold text-sm mb-1 text-purple-700 dark:text-purple-400">Сезонные</div>
+                    <div className="text-xs text-muted-foreground">
+                      Безлимитное катание весь сезон 2025-2026. Максимальная выгода для регулярного катания!
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t space-y-2">
+                  <h5 className="font-semibold text-sm">Типы склонов:</h5>
                   <div className="p-3 bg-blue-500/5 rounded-lg border border-blue-500/10">
                     <div className="font-semibold text-sm mb-1">Газпром Поляна</div>
                     <div className="text-xs text-muted-foreground">
