@@ -475,8 +475,9 @@ export function getKrasnayaPolyanaPrice(
   days: number,
   ageCategory: AgeCategory
 ): number | null {
+  // Для сезонных пассов days не важен
   const pass = krasnayaPolyanaPricing.find(
-    (p) => p.passType === passType && p.days === days
+    (p) => p.passType === passType && (p.days === days || (passType === 'seasonal' || passType === 'seasonal-evening'))
   );
   
   if (!pass) return null;

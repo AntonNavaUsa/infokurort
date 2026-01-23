@@ -322,11 +322,8 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
               krasnayaPolyanaPassType === 'evening' || 
               krasnayaPolyanaPassType === 'fast-track' ||
               krasnayaPolyanaPassType === 'baby') && renderMultiDaysSelector()}
-            {/* Показываем категорию возраста для не семейных тарифов */}
-            {krasnayaPolyanaPassType !== 'family' && 
-             krasnayaPolyanaPassType !== 'seasonal' && 
-             krasnayaPolyanaPassType !== 'seasonal-evening' && 
-             renderAgeCategorySelector()}
+            {/* Показываем категорию возраста для всех типов кроме семейного */}
+            {krasnayaPolyanaPassType !== 'family' && renderAgeCategorySelector()}
           </div>
         )}
 
