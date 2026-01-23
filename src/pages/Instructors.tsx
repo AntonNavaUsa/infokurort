@@ -12,7 +12,6 @@ import {
   Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 
 const instructorTypes = [
   {
@@ -114,8 +113,6 @@ const resorts = [
 ];
 
 const Instructors = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -277,13 +274,13 @@ const Instructors = () => {
             <h2 className="font-display text-3xl font-bold text-foreground mb-10">
               Школы и инструкторы по курортам
             </h2>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {resorts.map((resort) => (
                 <div 
                   key={resort.name}
-                  className="p-6 bg-card rounded-xl border border-border/50"
+                  className="p-4 md:p-6 bg-card rounded-xl border border-border/50"
                 >
-                  <h3 className="font-display text-xl font-semibold text-foreground mb-6 pb-4 border-b border-border/50">
+                  <h3 className="font-display text-lg md:text-xl font-semibold text-foreground mb-4 md:mb-6 pb-3 md:pb-4 border-b border-border/50">
                     {resort.name}
                   </h3>
                   <div className="space-y-6">
@@ -321,19 +318,19 @@ const Instructors = () => {
         </section>
 
         {/* CTA */}
-        <section className="py-16 bg-card/30">
+        <section className="py-12 md:py-16 bg-card/30">
           <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto text-center p-8 bg-primary/5 rounded-2xl border border-primary/20">
-              <MessageCircle className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h2 className="font-display text-2xl font-bold text-foreground mb-4">
+            <div className="max-w-2xl mx-auto text-center p-6 md:p-8 bg-primary/5 rounded-2xl border border-primary/20">
+              <MessageCircle className="w-10 h-10 md:w-12 md:h-12 text-primary mx-auto mb-4" />
+              <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-4">
                 Не знаете, что выбрать?
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-sm md:text-base text-muted-foreground mb-6">
                 Уровень катания, цели, даты, дети или взрослые — всё это важно.
                 Мы поможем подобрать подходящую школу или инструктора именно под вашу задачу.
               </p>
-              <Button variant="hero" size="lg" onClick={() => navigate("/")}>
-                👉 Подобрать инструктора
+              <Button variant="hero" size="lg" className="w-full sm:w-auto">
+                👉 Задать вопрос в чате
               </Button>
             </div>
           </div>

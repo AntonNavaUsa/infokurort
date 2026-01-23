@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils";
 import logo from "@/assets/logo.png";
 
 const navItems = [
-  { href: "/", label: "Главная" },
-  { href: "/instructors", label: "Инструкторы" },
+  { href: "/", label: "Инструкторы" },
   { href: "/ski-passes", label: "Скипассы" },
   { href: "/freeride", label: "Фрирайд" },
   { href: "/about", label: "О сервисе" },

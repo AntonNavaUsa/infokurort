@@ -144,21 +144,21 @@ export function PriceCalculator() {
         <div className="space-y-3">
           <Label className="text-base font-semibold">Курорт</Label>
           <RadioGroup value={resort} onValueChange={handleResortChange}>
-            <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+            <div className="flex items-center space-x-2 p-2 md:p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
               <RadioGroupItem value="roza-hutor" id="roza-hutor" />
-              <Label htmlFor="roza-hutor" className="flex-1 cursor-pointer">
+              <Label htmlFor="roza-hutor" className="flex-1 cursor-pointer text-sm md:text-base">
                 Роза Хутор
               </Label>
             </div>
-            <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+            <div className="flex items-center space-x-2 p-2 md:p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
               <RadioGroupItem value="krasnaya-polyana" id="krasnaya-polyana" />
-              <Label htmlFor="krasnaya-polyana" className="flex-1 cursor-pointer">
+              <Label htmlFor="krasnaya-polyana" className="flex-1 cursor-pointer text-sm md:text-base">
                 Красная Поляна
               </Label>
             </div>
-            <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+            <div className="flex items-center space-x-2 p-2 md:p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
               <RadioGroupItem value="gazprom" id="gazprom" />
-              <Label htmlFor="gazprom" className="flex-1 cursor-pointer">
+              <Label htmlFor="gazprom" className="flex-1 cursor-pointer text-sm md:text-base">
                 Газпром (Riders)
               </Label>
             </div>
@@ -202,22 +202,22 @@ export function PriceCalculator() {
         <div className="space-y-3">
           <Label className="text-base font-semibold">Тип занятия</Label>
           <RadioGroup value={category} onValueChange={(v) => handleCategoryChange(v as Category)}>
-            <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+            <div className="flex items-center space-x-2 p-2 md:p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
               <RadioGroupItem value="individual" id="individual" />
-              <Label htmlFor="individual" className="flex-1 cursor-pointer">
+              <Label htmlFor="individual" className="flex-1 cursor-pointer text-sm md:text-base">
                 Индивидуальные занятия
               </Label>
             </div>
-            <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+            <div className="flex items-center space-x-2 p-2 md:p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
               <RadioGroupItem value="group-adult" id="group-adult" />
-              <Label htmlFor="group-adult" className="flex-1 cursor-pointer">
+              <Label htmlFor="group-adult" className="flex-1 cursor-pointer text-sm md:text-base">
                 Групповые занятия для взрослых
               </Label>
             </div>
             {resort === 'roza-hutor' && (
-              <div className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
+              <div className="flex items-center space-x-2 p-2 md:p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer">
                 <RadioGroupItem value="group-child" id="group-child" />
-                <Label htmlFor="group-child" className="flex-1 cursor-pointer">
+                <Label htmlFor="group-child" className="flex-1 cursor-pointer text-sm md:text-base">
                   Детский клуб «Егорка»
                 </Label>
               </div>
@@ -286,10 +286,10 @@ export function PriceCalculator() {
             )}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">
+                <p className="text-xs md:text-sm text-muted-foreground mb-1">
                   {days > 1 && !selectedPrice?.duration.includes('дня') && !selectedPrice?.duration.includes('дней') ? 'Итоговая стоимость' : 'Стоимость'}
                 </p>
-                <p className="text-4xl font-bold text-primary">
+                <p className="text-2xl md:text-4xl font-bold text-primary">
                   {totalPrice ? `${totalPrice.toLocaleString('ru-RU')} ₽` : '—'}
                 </p>
               </div>
@@ -313,12 +313,12 @@ export function PriceCalculator() {
                 {comparativePrices.map((comp, idx) => {
                   const compTotalPrice = comp.price ? comp.price * days : null;
                   return (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg text-sm">
-                      <div className="flex-1">
-                        <div className="font-medium">{resortNames[comp.resort]}</div>
-                        <div className="text-xs text-muted-foreground">{comp.description}</div>
+                    <div key={idx} className="flex items-center justify-between p-2 md:p-3 bg-muted/30 rounded-lg text-xs md:text-sm">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{resortNames[comp.resort]}</div>
+                        <div className="text-xs text-muted-foreground truncate">{comp.description}</div>
                       </div>
-                      <div className="font-bold text-base">
+                      <div className="font-bold text-sm md:text-base ml-2 flex-shrink-0">
                         {compTotalPrice ? `${compTotalPrice.toLocaleString('ru-RU')} ₽` : 'Н/Д'}
                       </div>
                     </div>
