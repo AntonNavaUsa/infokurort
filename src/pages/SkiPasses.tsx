@@ -65,6 +65,7 @@ const SkiPasses = () => {
                       Идеально подходит для всех уровней подготовки.
                     </p>
                     <div className="flex gap-2 mt-2">
+                      <Badge variant="secondary">Зелёные трассы</Badge>
                       <Badge variant="secondary">Синие трассы</Badge>
                       <Badge variant="secondary">Красные трассы</Badge>
                     </div>
@@ -77,6 +78,7 @@ const SkiPasses = () => {
                       Отлично подходит для опытных лыжников.
                     </p>
                     <div className="flex gap-2 mt-2">
+                      <Badge variant="secondary">Синие трассы</Badge>
                       <Badge variant="secondary">Красные трассы</Badge>
                       <Badge variant="secondary">Черные трассы</Badge>
                     </div>
@@ -231,7 +233,7 @@ const SkiPasses = () => {
                         Вечерняя Лаура
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Вечернее катание на склоне Лаура (17:00-22:00)
+                        Вечернее катание на склоне Лаура (18:00-22:00)
                       </div>
                     </div>
                   </div>

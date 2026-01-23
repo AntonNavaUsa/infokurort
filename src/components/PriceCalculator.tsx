@@ -65,6 +65,56 @@ export function PriceCalculator() {
   const totalPrice = pricePerDay ? pricePerDay * days : null;
   const season = getSeasonByDate(date, resort);
 
+  // Функция для получения сравнительных цен на других курортах
+  const getComparativePrices = () => {
+    if (!selectedPrice) return [];
+
+    const comparisons: Array<{ resort: Resort; price: number | null; description: string }> = [];
+    const otherResorts = (['roza-hutor', 'krasnaya-polyana', 'gazprom'] as Resort[]).filter(r => r !== resort);
+
+    otherResorts.forEach(otherResort => {
+      // Ищем наиболее похожую программу на другом курорте
+      let similarPrice: typeof selectedPrice | undefined;
+
+      if (category === 'individual') {
+        // Для индивидуальных занятий сравниваем по длительности и количеству участников
+        similarPrice = skiSchoolPricing.find(p => 
+          p.resort === otherResort &&
+          p.category === category &&
+          p.duration === selectedPrice.duration &&
+          p.participants === selectedPrice.participants
+        );
+      } else if (category === 'group-adult') {
+        // Для групповых взрослых - ищем по длительности
+        similarPrice = skiSchoolPricing.find(p => 
+          p.resort === otherResort &&
+          p.category === category &&
+          p.duration === selectedPrice.duration
+        );
+      } else if (category === 'group-child') {
+        // Для детского клуба ищем похожие программы по типу или возрасту
+        similarPrice = skiSchoolPricing.find(p => 
+          p.resort === otherResort &&
+          p.category === category &&
+          (p.type === selectedPrice.type || p.ageRange === selectedPrice.ageRange || p.duration === selectedPrice.duration)
+        );
+      }
+
+      if (similarPrice) {
+        const price = calculatePrice(similarPrice.id, date);
+        comparisons.push({
+          resort: otherResort,
+          price: price,
+          description: similarPrice.description || similarPrice.duration
+        });
+      }
+    });
+
+    return comparisons;
+  };
+
+  const comparativePrices = getComparativePrices();
+
   const handleResortChange = (newResort: Resort) => {
     setResort(newResort);
     const firstOption = skiSchoolPricing.find(p => p.resort === newResort && p.category === category);
@@ -249,6 +299,34 @@ export function PriceCalculator() {
             <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm">
               <p className="text-muted-foreground">
                 Сезон {seasonNames[resort][season as keyof typeof seasonNames[typeof resort]]}: {seasonDatesInfo[resort][season as keyof typeof seasonDatesInfo[typeof resort]]}
+              </p>
+            </div>
+          )}
+
+          {/* Сравнительная таблица с другими курортами */}
+          {comparativePrices.length > 0 && totalPrice && (
+            <div className="mt-4 pt-4 border-t">
+              <h4 className="font-semibold mb-3 text-sm flex items-center gap-2">
+                <span>Сравнение с другими курортами</span>
+              </h4>
+              <div className="space-y-2">
+                {comparativePrices.map((comp, idx) => {
+                  const compTotalPrice = comp.price ? comp.price * days : null;
+                  return (
+                    <div key={idx} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg text-sm">
+                      <div className="flex-1">
+                        <div className="font-medium">{resortNames[comp.resort]}</div>
+                        <div className="text-xs text-muted-foreground">{comp.description}</div>
+                      </div>
+                      <div className="font-bold text-base">
+                        {compTotalPrice ? `${compTotalPrice.toLocaleString('ru-RU')} ₽` : 'Н/Д'}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                * Цены указаны для аналогичных условий (дата, категория, длительность)
               </p>
             </div>
           )}
