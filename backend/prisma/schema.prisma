@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Resort {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  slug        String    @unique @db.VarChar(255)
+  location    String?   @db.VarChar(255)
+  status      String?   @db.VarChar(50) // open, closed, partial
+  snowDepth   Int?      @map("snow_depth")
+  weather     String?   @db.Text
+  temperature Int?      // в градусах Цельсия
+  liftsOpen   Int?      @map("lifts_open")
+  liftsTotal  Int?      @map("lifts_total")
+  trailsOpen  Int?      @map("trails_open")
+  trailsTotal Int?      @map("trails_total")
+  website     String?   @db.VarChar(500)
+  description String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("resorts")
+}
+
+model KnowledgeBase {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(500)
+  content   String   @db.Text
+  category  String   @db.VarChar(100) // faq, resort_info, ski_tips, safety, pricing, instructors
+  subcategory String? @db.VarChar(100)
+  metadata  Json?    @db.JsonB
+  // embedding Unsupported("vector(1536)")?  // Временно отключено - нужен pgvector
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@index([isActive])
+  @@map("knowledge_base")
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  name         String?  @db.VarChar(255)
+  role         String   @default("editor") @db.VarChar(50) // super_admin, admin, editor
+  isActive     Boolean  @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model ChatLog {
+  id            Int      @id @default(autoincrement())
+  sessionId     String   @map("session_id") @db.VarChar(255)
+  userMessage   String   @map("user_message") @db.Text
+  assistantResponse String @map("assistant_response") @db.Text
+  contextUsed   Json?    @map("context_used") @db.JsonB // какие документы были использованы
+  tokensUsed    Int?     @map("tokens_used")
+  responseTime  Int?     @map("response_time") // в миллисекундах
+  userFeedback  String?  @map("user_feedback") @db.VarChar(20) // positive, negative, null
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@index([createdAt])
+  @@map("chat_logs")
+}

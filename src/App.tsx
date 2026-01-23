@@ -8,6 +8,7 @@ import Instructors from "./pages/Instructors";
 import Freeride from "./pages/Freeride";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import { AILoggerPanel } from "./components/AILoggerPanel";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      {/* AI Logger только в dev режиме */}
+      {import.meta.env.DEV && <AILoggerPanel />}
     </TooltipProvider>
   </QueryClientProvider>
 );

@@ -1,4 +1,50 @@
 services:
+  # PostgreSQL with pgvector extension
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: ski_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ski_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ski_password}
+      POSTGRES_DB: ${POSTGRES_DB:-ski_concierge}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ski_user} -d ${POSTGRES_DB:-ski_concierge}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ski_backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-3001}:3001"
+    env_file:
+      - ./backend/.env.production
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - web
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (existing)
   infokurort:
     build:
       context: .
@@ -6,9 +52,14 @@ services:
     container_name: infokurort
     restart: unless-stopped
     ports:
-      - "3001:80"  # Внешний порт:Внутренний порт
+      - "${FRONTEND_PORT:-80}:80"
     networks:
       - web
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
 
 networks:
   web:

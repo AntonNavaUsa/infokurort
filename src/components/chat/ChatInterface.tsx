@@ -1,13 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Send, User, Bot, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-interface Message {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-}
+import { useAIChat } from "@/hooks/useAIChat";
 
 const quickSuggestions = [
   "Ищу инструктора для ребёнка 7 лет",
@@ -16,25 +11,25 @@ const quickSuggestions = [
   "Нужен гид на целый день",
 ];
 
-const mockResponses: Record<string, string> = {
-  default: "Отличный вопрос! Чтобы подобрать лучший вариант, уточните: какой у вас уровень катания и на какие даты планируете?",
-  child: "Для детей 7 лет у нас есть отличные детские инструкторы! Занятия обычно проходят в игровой форме. Планируете индивидуальные занятия или в мини-группе?",
-  freeride: "Фрирайд для начинающих — это здорово! Мы подберём опытного гида, который покажет безопасные маршруты. На какой курорт планируете?",
-  group: "Групповые занятия — отличный выбор для старта! Обычно группы 4-6 человек. На какие даты смотрите?",
-};
-
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: "Привет! Я помогу подобрать инструктора или гида для фрирайда. Опишите, что вы ищете — я задам пару уточняющих вопросов и предложу лучшие варианты.",
-    },
-  ]);
+  const { messages, isLoading, sendMessage } = useAIChat();
   const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Добавляем приветственное сообщение при загрузке
+  useEffect(() => {
+    if (messages.length === 0) {
+      // Имитируем начальное сообщение от AI
+      const welcomeMsg = {
+        role: 'assistant' as const,
+        content: "Привет! Я Ski Concierge, ваш помощник по бронированию инструкторов на горнолыжных курортах Сочи. Опишите, что вы ищете — я задам пару уточняющих вопросов и помогу выбрать лучший вариант! 🎿",
+        timestamp: new Date(),
+      };
+      // Временно используем прямую установку в состояние
+      setHasInteracted(false);
+    }
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -46,40 +41,13 @@ export function ChatInterface() {
     }
   }, [messages, hasInteracted]);
 
-  const getResponse = (text: string): string => {
-    const lower = text.toLowerCase();
-    if (lower.includes("ребён") || lower.includes("дет")) return mockResponses.child;
-    if (lower.includes("фрирайд") || lower.includes("впервые")) return mockResponses.freeride;
-    if (lower.includes("групп")) return mockResponses.group;
-    return mockResponses.default;
-  };
-
   const handleSubmit = async (text: string) => {
     if (!text.trim()) return;
-
-    setHasInteracted(true);
     
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: text,
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
+    setHasInteracted(true);
     setInput("");
-    setIsLoading(true);
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: getResponse(text),
-    };
-
-    setMessages((prev) => [...prev, assistantMessage]);
-    setIsLoading(false);
+    
+    await sendMessage(text);
   };
 
   return (
@@ -88,9 +56,21 @@ export function ChatInterface() {
       <div className="bg-card rounded-2xl shadow-elevated border border-border/50 overflow-hidden">
         {/* Messages */}
         <div className="h-[400px] overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
+          {/* Welcome message if no messages yet */}
+          {messages.length === 0 && (
+            <div className="flex gap-3 animate-fade-in">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <Bot className="w-4 h-4 text-primary" />
+              </div>
+              <div className="bg-frost rounded-2xl rounded-bl-md px-4 py-3 text-sm text-foreground">
+                Привет! Я Ski Concierge, ваш помощник по бронированию инструкторов на горнолыжных курортах Сочи. Опишите, что вы ищете — я задам пару уточняющих вопросов и помогу выбрать лучший вариант! 🎿
+              </div>
+            </div>
+          )}
+          
+          {messages.map((message, index) => (
             <div
-              key={message.id}
+              key={`${message.role}-${index}-${message.timestamp.getTime()}`}
               className={cn(
                 "flex gap-3 animate-fade-in",
                 message.role === "user" ? "justify-end" : "justify-start"

@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
+import { PriceCalculator } from "@/components/PriceCalculator";
 import { 
   Building2, 
   UserCheck, 
@@ -137,6 +138,13 @@ const Instructors = () => {
                 и в чём между ними разница, чтобы вы могли выбрать безопасно и осознанно.
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Price Calculator */}
+        <section className="py-16">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <PriceCalculator />
           </div>
         </section>
 

@@ -1,0 +1,4 @@
+# Добавить в .gitignore для безопасности
+.env
+backend/.env.production
+*.log
