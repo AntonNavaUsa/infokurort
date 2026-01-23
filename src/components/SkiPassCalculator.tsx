@@ -325,6 +325,19 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
   }
 
   function renderAgeCategorySelector() {
+    // Красная Поляна не имеет молодежного тарифа
+    const availableCategories: AgeCategory[] = resort === 'krasnaya-polyana' 
+      ? ['adult', 'child']
+      : ['adult', 'youth', 'child'];
+
+    const categoryLabels: Record<AgeCategory, string> = resort === 'krasnaya-polyana'
+      ? {
+          adult: 'Взрослый (с 15 лет)',
+          youth: '',
+          child: 'Детский (7-14 лет)',
+        }
+      : ageCategoryNames;
+
     return (
       <div className="space-y-3">
         <Label className="text-base font-semibold">Категория</Label>
@@ -333,9 +346,9 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {(Object.keys(ageCategoryNames) as AgeCategory[]).map((cat) => (
+            {availableCategories.map((cat) => (
               <SelectItem key={cat} value={cat}>
-                {ageCategoryNames[cat]}
+                {categoryLabels[cat]}
               </SelectItem>
             ))}
           </SelectContent>
