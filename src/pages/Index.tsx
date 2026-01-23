@@ -1,6 +1,8 @@
 import { Header } from "@/components/layout/Header";
 import { ChatInterface } from "@/components/chat/ChatInterface";
-import { Mountain, Shield, Users, Calendar } from "lucide-react";
+import { Mountain, Shield, Users, Calendar, Ticket, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   return (
@@ -87,6 +89,33 @@ const Index = () => {
                 <div>
                   <p className="font-semibold text-foreground">Все курорты</p>
                   <p className="text-sm text-muted-foreground">Красная Поляна и другие</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Ski Passes CTA */}
+            <div className="mt-16 max-w-4xl mx-auto animate-slide-up" style={{ animationDelay: "0.5s" }}>
+              <div className="bg-gradient-to-br from-blue-600/10 via-sky-500/5 to-blue-600/10 border-2 border-blue-500/20 rounded-2xl p-8 md:p-10">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-14 h-14 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                      <Ticket className="w-7 h-7 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-2xl font-bold text-foreground mb-2">
+                        Рассчитайте стоимость ски-пасса
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Калькулятор абонементов Газпром Поляна (склоны Лаура и Альпика)
+                      </p>
+                    </div>
+                  </div>
+                  <Link to="/ski-passes">
+                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700 group">
+                      Открыть калькулятор
+                      <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
