@@ -205,6 +205,8 @@ const SkiPasses = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
+                  <div className="text-xs font-semibold text-muted-foreground mb-2">Однодневные:</div>
+                  
                   <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
                     <div className="font-semibold text-sm mb-1 text-blue-700 dark:text-blue-400">Стандартный</div>
                     <div className="text-xs text-muted-foreground">
@@ -237,6 +239,24 @@ const SkiPasses = () => {
                     <div className="text-xs text-muted-foreground">
                       Вечернее катание с 19:00 до 23:00 на учебном склоне: 1 подъем на «Олимпия» + 
                       неограниченно на «Шале», «Ювента».
+                    </div>
+                  </div>
+
+                  <div className="text-xs font-semibold text-muted-foreground mb-2 mt-4">Сезонные и годовые:</div>
+
+                  <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                    <div className="font-semibold text-sm mb-1 text-purple-700 dark:text-purple-400">Сезонный 2025/2026</div>
+                    <div className="text-xs text-muted-foreground">
+                      Безлимитное катание весь горнолыжный сезон 2025/26. Доступ на все подъемники. 
+                      Включает дневное и вечернее катание. <span className="font-semibold">79 300 ₽</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                    <div className="font-semibold text-sm mb-1 text-amber-700 dark:text-amber-400">Годовой 2025/2026</div>
+                    <div className="text-xs text-muted-foreground">
+                      Безлимитное катание: весь горнолыжный сезон 2025/26 + летний сезон 2026. 
+                      Доступ на все трассы, подъемники и вело/пешие тропы. <span className="font-semibold">91 400 ₽</span>
                     </div>
                   </div>
                 </CardContent>

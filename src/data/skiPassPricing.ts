@@ -11,7 +11,7 @@ export type Resort = 'gazprom' | 'rosa-khutor';
 export type PassType = 'full' | 'laura' | 'alpika' | 'evening-laura' | 'cross-country';
 
 // Типы ски-пассов для Роза Хутор
-export type RosaPassType = 'standard' | 'training' | 'fast-track' | 'evening';
+export type RosaPassType = 'standard' | 'training' | 'fast-track' | 'evening' | 'seasonal' | 'annual';
 
 // Периоды действия
 export interface PricePeriod {
@@ -339,7 +339,9 @@ export const rosaPassTypeNames: Record<RosaPassType, string> = {
   standard: 'Стандартный ски-пасс',
   training: 'Учебный ски-пасс',
   'fast-track': 'Ски-пасс + Фаст-трек «Приоритет»',
-  evening: 'Вечерний ски-пасс'
+  evening: 'Вечерний ски-пасс',
+  seasonal: 'Сезонный ски-пасс 2025/2026',
+  annual: 'Годовой ски-пасс 2025/2026'
 };
 
 // Описания типов пасс Роза Хутор
@@ -347,7 +349,9 @@ export const rosaPassTypeDescriptions: Record<RosaPassType, string> = {
   standard: 'Доступ на все подъемники курорта (кроме Тироль), дневное катание',
   training: 'Учебный склон: 1 подъем на «Олимпия» + неограниченно на «Шале», «Ювента»',
   'fast-track': 'Стандартный ски-пасс + быстрый проход на все подъемники',
-  evening: 'Вечернее катание 19:00-23:00 на учебном склоне'
+  evening: 'Вечернее катание 19:00-23:00 на учебном склоне',
+  seasonal: 'Безлимитное катание весь горнолыжный сезон 2025/26 (дневное + вечернее)',
+  annual: 'Безлимитное катание: горнолыжный сезон 2025/26 + летний сезон 2026'
 };
 
 // Функция для получения цены Роза Хутор
@@ -355,6 +359,10 @@ export function getRosaHutorPrice(
   date: Date,
   passType: RosaPassType
 ): number | null {
+  // Для сезонных и годовых пассов возвращаем фиксированную цену
+  if (passType === 'seasonal') return 79300;
+  if (passType === 'annual') return 91400;
+
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');

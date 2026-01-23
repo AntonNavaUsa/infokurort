@@ -74,7 +74,7 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
       totalPrice = price;
     }
   } else if (resort === 'rosa-khutor') {
-    // Роза Хутор поддерживает только однодневные ски-пассы
+    // Роза Хутор поддерживает однодневные, сезонные и годовые ски-пассы
     price = getRosaHutorPrice(date, rosaPassType);
     totalPrice = price;
   }
@@ -138,10 +138,11 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
             </TabsContent>
           </Tabs>
         ) : (
-          /* Роза Хутор - только однодневные */
+          /* Роза Хутор - однодневные, сезонные и годовые */
           <div className="space-y-6">
             {renderRosaPassTypeSelector()}
-            {renderDateSelector()}
+            {/* Дата только для однодневных пассов */}
+            {rosaPassType !== 'seasonal' && rosaPassType !== 'annual' && renderDateSelector()}
           </div>
         )}
 
@@ -156,6 +157,10 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
 
   // Вспомогательные функции рендера
   function renderRosaPassTypeSelector() {
+    // Разделяем типы на однодневные и сезонные/годовые
+    const dailyTypes: RosaPassType[] = ['standard', 'training', 'fast-track', 'evening'];
+    const seasonalTypes: RosaPassType[] = ['seasonal', 'annual'];
+    
     return (
       <div className="space-y-3">
         <Label className="text-base font-semibold flex items-center gap-2">
@@ -163,7 +168,9 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
           Тип ски-пасса
         </Label>
         <RadioGroup value={rosaPassType} onValueChange={(value) => setRosaPassType(value as RosaPassType)}>
-          {(Object.keys(rosaPassTypeNames) as RosaPassType[]).map((type) => (
+          {/* Однодневные */}
+          <div className="text-xs font-semibold text-muted-foreground mb-2 mt-2">Однодневные:</div>
+          {dailyTypes.map((type) => (
             <div
               key={type}
               className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
@@ -171,6 +178,23 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
               <RadioGroupItem value={type} id={`rosa-${type}`} className="mt-1" />
               <Label htmlFor={`rosa-${type}`} className="flex-1 cursor-pointer">
                 <div className="font-semibold text-sm">{rosaPassTypeNames[type]}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {rosaPassTypeDescriptions[type]}
+                </div>
+              </Label>
+            </div>
+          ))}
+          
+          {/* Сезонные и годовые */}
+          <div className="text-xs font-semibold text-muted-foreground mb-2 mt-4">Сезонные и годовые:</div>
+          {seasonalTypes.map((type) => (
+            <div
+              key={type}
+              className="flex items-start space-x-3 p-3 rounded-lg border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 transition-colors cursor-pointer"
+            >
+              <RadioGroupItem value={type} id={`rosa-${type}`} className="mt-1" />
+              <Label htmlFor={`rosa-${type}`} className="flex-1 cursor-pointer">
+                <div className="font-semibold text-sm text-purple-700 dark:text-purple-400">{rosaPassTypeNames[type]}</div>
                 <div className="text-xs text-muted-foreground mt-1">
                   {rosaPassTypeDescriptions[type]}
                 </div>
@@ -315,7 +339,9 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
               {resort === 'gazprom' && skiPassCategory === 'single-day' && 'Стоимость за день:'}
               {resort === 'gazprom' && skiPassCategory === 'multi-day' && `Стоимость за ${multiDays} ${multiDays < 5 ? 'дня' : 'дней'}:`}
               {resort === 'gazprom' && skiPassCategory === 'seasonal' && 'Стоимость сезонного абонемента:'}
-              {resort === 'rosa-khutor' && 'Стоимость за день:'}
+              {resort === 'rosa-khutor' && rosaPassType !== 'seasonal' && rosaPassType !== 'annual' && 'Стоимость за день:'}
+              {resort === 'rosa-khutor' && rosaPassType === 'seasonal' && 'Стоимость сезонного абонемента:'}
+              {resort === 'rosa-khutor' && rosaPassType === 'annual' && 'Стоимость годового абонемента:'}
             </span>
             <span className="text-2xl font-bold">
               {price.toLocaleString('ru-RU')} ₽
@@ -329,8 +355,10 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
             {resort === 'gazprom' && skiPassCategory === 'multi-day' && <p>✓ Действует в любые {multiDays} {multiDays < 5 ? 'дня' : 'дней'} в период</p>}
             {resort === 'gazprom' && skiPassCategory === 'seasonal' && <p>✓ Безлимитное катание весь сезон</p>}
             {resort === 'rosa-khutor' && rosaPassType === 'evening' && <p>✓ Вечернее катание 19:00-23:00</p>}
-            {resort === 'rosa-khutor' && rosaPassType === 'standard' && <p>✓ Смарт-карта включена в стоимость</p>}
+            {resort === 'rosa-khutor' && (rosaPassType === 'standard' || rosaPassType === 'seasonal' || rosaPassType === 'annual') && <p>✓ Смарт-карта включена в стоимость</p>}
             {resort === 'rosa-khutor' && rosaPassType === 'fast-track' && <p>✓ Быстрый проход на все подъемники</p>}
+            {resort === 'rosa-khutor' && rosaPassType === 'seasonal' && <p>✓ Безлимитное катание весь горнолыжный сезон 2025/26</p>}
+            {resort === 'rosa-khutor' && rosaPassType === 'annual' && <p>✓ Горнолыжный сезон 2025/26 + летний сезон 2026</p>}
           </div>
         </div>
       </div>
@@ -355,8 +383,8 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
       );
     }
 
-    // Для Роза Хутор - показываем периоды
-    if (resort === 'rosa-khutor') {
+    // Для Роза Хутор - показываем периоды только для однодневных пассов
+    if (resort === 'rosa-khutor' && rosaPassType !== 'seasonal' && rosaPassType !== 'annual') {
       return (
         <div className="pt-4 border-t">
           <h4 className="font-semibold mb-3 text-sm">Ценовые периоды сезона 2025-2026:</h4>
