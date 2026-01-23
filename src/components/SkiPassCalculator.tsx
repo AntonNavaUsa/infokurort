@@ -14,40 +14,55 @@ import { ru } from "date-fns/locale";
 import {
   type AgeCategory,
   type PassType,
+  type RosaPassType,
   type SkiPassCategory,
+  type Resort,
+  resortNames,
   skiPassCategoryNames,
   skiPassCategoryDescriptions,
   passTypeNames,
   passTypeDescriptions,
+  rosaPassTypeNames,
+  rosaPassTypeDescriptions,
   ageCategoryNames,
   getSkiPassPrice,
   getMultiDayPrice,
   getSeasonalPrice,
   getPeriodByDate,
+  getRosaHutorPrice,
+  getRosaPeriodByDate,
   periodInfo
 } from "@/data/skiPassPricing";
 
 export function SkiPassCalculator() {
+  const [resort, setResort] = useState<Resort>('gazprom');
   const [skiPassCategory, setSkiPassCategory] = useState<SkiPassCategory>('single-day');
   const [passType, setPassType] = useState<PassType>('full');
+  const [rosaPassType, setRosaPassType] = useState<RosaPassType>('standard');
   const [ageCategory, setAgeCategory] = useState<AgeCategory>('adult');
   const [date, setDate] = useState<Date>(new Date('2026-02-01'));
   const [multiDays, setMultiDays] = useState<number>(2);
 
-  const period = getPeriodByDate(date);
+  const period = resort === 'gazprom' ? getPeriodByDate(date) : getRosaPeriodByDate(date);
   
   // Расчет цены в зависимости от типа абонемента
   let price: number | null = null;
   let totalPrice: number | null = null;
   
-  if (skiPassCategory === 'single-day') {
-    price = getSkiPassPrice(date, passType, ageCategory);
-    totalPrice = price;
-  } else if (skiPassCategory === 'multi-day') {
-    price = getMultiDayPrice(date, passType, multiDays);
-    totalPrice = price;
-  } else if (skiPassCategory === 'seasonal') {
-    price = getSeasonalPrice(passType, ageCategory);
+  if (resort === 'gazprom') {
+    if (skiPassCategory === 'single-day') {
+      price = getSkiPassPrice(date, passType, ageCategory);
+      totalPrice = price;
+    } else if (skiPassCategory === 'multi-day') {
+      price = getMultiDayPrice(date, passType, multiDays);
+      totalPrice = price;
+    } else if (skiPassCategory === 'seasonal') {
+      price = getSeasonalPrice(passType, ageCategory);
+      totalPrice = price;
+    }
+  } else if (resort === 'rosa-khutor') {
+    // Роза Хутор поддерживает только однодневные ски-пассы
+    price = getRosaHutorPrice(date, rosaPassType);
     totalPrice = price;
   }
 
@@ -64,43 +79,96 @@ export function SkiPassCalculator() {
       </div>
 
       <div className="space-y-6">
-        {/* Тип абонемента (Tabs) */}
-        <Tabs value={skiPassCategory} onValueChange={(value) => setSkiPassCategory(value as SkiPassCategory)}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="single-day">Однодневные</TabsTrigger>
-            <TabsTrigger value="multi-day">Многодневные</TabsTrigger>
-            <TabsTrigger value="seasonal">Сезонные</TabsTrigger>
-          </TabsList>
+        {/* Выбор курорта */}
+        <div className="space-y-3">
+          <Label className="text-base font-semibold">Курорт</Label>
+          <RadioGroup value={resort} onValueChange={(value) => setResort(value as Resort)}>
+            {(Object.keys(resortNames) as Resort[]).map((res) => (
+              <div
+                key={res}
+                className="flex items-center space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+              >
+                <RadioGroupItem value={res} id={res} />
+                <Label htmlFor={res} className="flex-1 cursor-pointer font-semibold">
+                  {resortNames[res]}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
 
-          {/* Контент для каждого типа */}
-          <TabsContent value="single-day" className="space-y-6 mt-6">
-            {renderPassTypeSelector()}
-            {renderAgeCategorySelector()}
+        {/* Тип абонемента (Tabs) - только для Газпрома */}
+        {resort === 'gazprom' ? (
+          <Tabs value={skiPassCategory} onValueChange={(value) => setSkiPassCategory(value as SkiPassCategory)}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="single-day">Однодневные</TabsTrigger>
+              <TabsTrigger value="multi-day">Многодневные</TabsTrigger>
+              <TabsTrigger value="seasonal">Сезонные</TabsTrigger>
+            </TabsList>
+
+            {/* Контент для каждого типа */}
+            <TabsContent value="single-day" className="space-y-6 mt-6">
+              {renderPassTypeSelector()}
+              {renderAgeCategorySelector()}
+              {renderDateSelector()}
+            </TabsContent>
+
+            <TabsContent value="multi-day" className="space-y-6 mt-6">
+              {renderPassTypeSelector()}
+              {renderDateSelector()}
+              {renderMultiDaysSelector()}
+            </TabsContent>
+
+            <TabsContent value="seasonal" className="space-y-6 mt-6">
+              {renderPassTypeSelector()}
+              {renderAgeCategorySelector()}
+            </TabsContent>
+          </Tabs>
+        ) : (
+          /* Роза Хутор - только однодневные */
+          <div className="space-y-6">
+            {renderRosaPassTypeSelector()}
             {renderDateSelector()}
-          </TabsContent>
-
-          <TabsContent value="multi-day" className="space-y-6 mt-6">
-            {renderPassTypeSelector()}
-            {renderDateSelector()}
-            {renderMultiDaysSelector()}
-          </TabsContent>
-
-          <TabsContent value="seasonal" className="space-y-6 mt-6">
-            {renderPassTypeSelector()}
-            {renderAgeCategorySelector()}
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
 
         {/* Итоговая стоимость */}
         {renderPriceDisplay()}
 
-        {/* Информация о периодах - только для однодневных и многодневных */}
-        {(skiPassCategory === 'single-day' || skiPassCategory === 'multi-day') && renderPeriodInfo()}
+        {/* Информация о периодах */}
+        {renderPeriodInfo()}
       </div>
     </Card>
   );
 
   // Вспомогательные функции рендера
+  function renderRosaPassTypeSelector() {
+    return (
+      <div className="space-y-3">
+        <Label className="text-base font-semibold flex items-center gap-2">
+          <Ticket className="w-4 h-4" />
+          Тип ски-пасса
+        </Label>
+        <RadioGroup value={rosaPassType} onValueChange={(value) => setRosaPassType(value as RosaPassType)}>
+          {(Object.keys(rosaPassTypeNames) as RosaPassType[]).map((type) => (
+            <div
+              key={type}
+              className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+            >
+              <RadioGroupItem value={type} id={`rosa-${type}`} className="mt-1" />
+              <Label htmlFor={`rosa-${type}`} className="flex-1 cursor-pointer">
+                <div className="font-semibold text-sm">{rosaPassTypeNames[type]}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {rosaPassTypeDescriptions[type]}
+                </div>
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+    );
+  }
+
   function renderPassTypeSelector() {
     return (
       <div className="space-y-3">
@@ -219,7 +287,7 @@ export function SkiPassCalculator() {
     if (!price) {
       return (
         <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-sm text-yellow-800 dark:text-yellow-200">
-          {skiPassCategory === 'seasonal' 
+          {resort === 'gazprom' && skiPassCategory === 'seasonal' 
             ? 'Для выбранного типа пасса нет доступных тарифов.'
             : 'Для выбранной даты нет доступных тарифов. Пожалуйста, выберите дату в сезоне 2026 года.'}
         </div>
@@ -231,9 +299,10 @@ export function SkiPassCalculator() {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <span className="text-sm opacity-90">
-              {skiPassCategory === 'single-day' && 'Стоимость за день:'}
-              {skiPassCategory === 'multi-day' && `Стоимость за ${multiDays} ${multiDays < 5 ? 'дня' : 'дней'}:`}
-              {skiPassCategory === 'seasonal' && 'Стоимость сезонного абонемента:'}
+              {resort === 'gazprom' && skiPassCategory === 'single-day' && 'Стоимость за день:'}
+              {resort === 'gazprom' && skiPassCategory === 'multi-day' && `Стоимость за ${multiDays} ${multiDays < 5 ? 'дня' : 'дней'}:`}
+              {resort === 'gazprom' && skiPassCategory === 'seasonal' && 'Стоимость сезонного абонемента:'}
+              {resort === 'rosa-khutor' && 'Стоимость за день:'}
             </span>
             <span className="text-2xl font-bold">
               {price.toLocaleString('ru-RU')} ₽
@@ -243,9 +312,12 @@ export function SkiPassCalculator() {
           <div className="text-xs opacity-75 pt-2">
             <p>✓ Включает канатные дороги</p>
             <p>✓ Доступ к трассам согласно типу пасса</p>
-            {passType === 'evening-laura' && <p>✓ Вечернее катание 17:00-22:00</p>}
-            {skiPassCategory === 'multi-day' && <p>✓ Действует в любые {multiDays} {multiDays < 5 ? 'дня' : 'дней'} в период</p>}
-            {skiPassCategory === 'seasonal' && <p>✓ Безлимитное катание весь сезон</p>}
+            {resort === 'gazprom' && passType === 'evening-laura' && <p>✓ Вечернее катание 17:00-22:00</p>}
+            {resort === 'gazprom' && skiPassCategory === 'multi-day' && <p>✓ Действует в любые {multiDays} {multiDays < 5 ? 'дня' : 'дней'} в период</p>}
+            {resort === 'gazprom' && skiPassCategory === 'seasonal' && <p>✓ Безлимитное катание весь сезон</p>}
+            {resort === 'rosa-khutor' && rosaPassType === 'evening' && <p>✓ Вечернее катание 19:00-23:00</p>}
+            {resort === 'rosa-khutor' && rosaPassType === 'standard' && <p>✓ Смарт-карта включена в стоимость</p>}
+            {resort === 'rosa-khutor' && rosaPassType === 'fast-track' && <p>✓ Быстрый проход на все подъемники</p>}
           </div>
         </div>
       </div>
@@ -253,18 +325,58 @@ export function SkiPassCalculator() {
   }
 
   function renderPeriodInfo() {
-    return (
-      <div className="pt-4 border-t">
-        <h4 className="font-semibold mb-3 text-sm">Ценовые периоды сезона 2025-2026:</h4>
-        <div className="space-y-2">
-          {periodInfo.map((info, idx) => (
-            <div key={idx} className="text-xs p-2 bg-muted/50 rounded">
-              <span className="font-medium">{info.period}</span>
-              <span className="text-muted-foreground ml-2">— {info.description}</span>
-            </div>
-          ))}
+    // Для Газпром - показываем только для однодневных и многодневных
+    if (resort === 'gazprom' && (skiPassCategory === 'single-day' || skiPassCategory === 'multi-day')) {
+      return (
+        <div className="pt-4 border-t">
+          <h4 className="font-semibold mb-3 text-sm">Ценовые периоды сезона 2025-2026:</h4>
+          <div className="space-y-2">
+            {periodInfo.map((info, idx) => (
+              <div key={idx} className="text-xs p-2 bg-muted/50 rounded">
+                <span className="font-medium">{info.period}</span>
+                <span className="text-muted-foreground ml-2">— {info.description}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    // Для Роза Хутор - показываем периоды
+    if (resort === 'rosa-khutor') {
+      return (
+        <div className="pt-4 border-t">
+          <h4 className="font-semibold mb-3 text-sm">Ценовые периоды сезона 2025-2026:</h4>
+          <div className="space-y-2">
+            <div className="text-xs p-2 bg-muted/50 rounded">
+              <span className="font-medium">01.01.26 - 31.01.26</span>
+              <span className="text-muted-foreground ml-2">— Начало сезона</span>
+            </div>
+            <div className="text-xs p-2 bg-muted/50 rounded">
+              <span className="font-medium">01.02.26 - 19.02.26</span>
+              <span className="text-muted-foreground ml-2">— Высокий сезон</span>
+            </div>
+            <div className="text-xs p-2 bg-muted/50 rounded">
+              <span className="font-medium">20.02.26 - 23.02.26</span>
+              <span className="text-muted-foreground ml-2">— Пиковые выходные</span>
+            </div>
+            <div className="text-xs p-2 bg-muted/50 rounded">
+              <span className="font-medium">24.02.26 - 09.03.26</span>
+              <span className="text-muted-foreground ml-2">— Высокий сезон</span>
+            </div>
+            <div className="text-xs p-2 bg-muted/50 rounded">
+              <span className="font-medium">10.03.26 - 31.03.26</span>
+              <span className="text-muted-foreground ml-2">— Весеннее катание</span>
+            </div>
+            <div className="text-xs p-2 bg-muted/50 rounded">
+              <span className="font-medium">01.04.26 - 12.04.26</span>
+              <span className="text-muted-foreground ml-2">— Закрытие сезона</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
   }
 }

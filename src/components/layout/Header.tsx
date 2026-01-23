@@ -26,8 +26,8 @@ export function Header() {
             to="/" 
             className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
           >
-            <img src={logo} alt="Alpine Guide" className="h-10 w-10 object-contain" />
-            <span className="font-display text-xl font-semibold">Alpine Guide</span>
+            <img src={logo} alt="Красная Поляна Инфо" className="h-10 w-10 object-contain" />
+            <span className="font-display text-xl font-semibold">Красная Поляна Инфо</span>
           </Link>
 
           {/* Desktop Navigation */}

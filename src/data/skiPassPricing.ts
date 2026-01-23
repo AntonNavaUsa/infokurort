@@ -4,8 +4,14 @@ export type AgeCategory = 'adult' | 'youth' | 'child';
 // Типы ски-пассов
 export type SkiPassCategory = 'single-day' | 'multi-day' | 'seasonal';
 
-// Типы склонов
+// Типы курортов
+export type Resort = 'gazprom' | 'rosa-khutor';
+
+// Типы склонов для Газпром
 export type PassType = 'full' | 'laura' | 'alpika' | 'evening-laura' | 'cross-country';
+
+// Типы ски-пассов для Роза Хутор
+export type RosaPassType = 'standard' | 'training' | 'fast-track' | 'evening';
 
 // Периоды действия
 export interface PricePeriod {
@@ -19,6 +25,12 @@ export interface PricePeriod {
     };
   };
 }
+
+// Названия курортов
+export const resortNames: Record<Resort, string> = {
+  gazprom: 'Газпром (Лаура + Альпика)',
+  'rosa-khutor': 'Роза Хутор'
+};
 
 // Структура данных для ски-пассов Газпром
 export const gazpromSkiPassPricing: PricePeriod[] = [
@@ -247,3 +259,127 @@ export const multiDayPasses: MultiDayPrice[] = [
   { days: 6, period: { start: '2026-04-01', end: '2026-05-10' }, passType: 'full', price: 18250 },
   { days: 7, period: { start: '2026-04-01', end: '2026-05-10' }, passType: 'full', price: 21300 },
 ];
+
+// ===============================
+// Данные для курорта Роза Хутор
+// ===============================
+
+// Структура данных для ски-пассов Роза Хутор
+export interface RosaPricePeriod {
+  start: string;
+  end: string;
+  prices: {
+    [key in RosaPassType]?: {
+      adult: number;
+      youth?: number;
+      child?: number;
+    };
+  };
+}
+
+export const rosaHutorSkiPassPricing: RosaPricePeriod[] = [
+  {
+    start: '2026-01-01',
+    end: '2026-01-31',
+    prices: {
+      standard: { adult: 5550 },
+      training: { adult: 3450 },
+      'fast-track': { adult: 16000 },
+      evening: { adult: 2900 }
+    }
+  },
+  {
+    start: '2026-02-01',
+    end: '2026-02-19',
+    prices: {
+      standard: { adult: 6800 },
+      training: { adult: 4200 },
+      'fast-track': { adult: 16000 }
+    }
+  },
+  {
+    start: '2026-02-20',
+    end: '2026-02-23',
+    prices: {
+      standard: { adult: 6950 },
+      'fast-track': { adult: 21500 }
+    }
+  },
+  {
+    start: '2026-02-24',
+    end: '2026-03-09',
+    prices: {
+      standard: { adult: 6800 },
+      training: { adult: 4200 },
+      'fast-track': { adult: 16000 }
+    }
+  },
+  {
+    start: '2026-03-10',
+    end: '2026-03-31',
+    prices: {
+      standard: { adult: 5550 },
+      training: { adult: 3450 },
+      'fast-track': { adult: 16000 }
+    }
+  },
+  {
+    start: '2026-04-01',
+    end: '2026-04-12',
+    prices: {
+      standard: { adult: 5190 },
+      training: { adult: 3450 },
+      'fast-track': { adult: 16000 }
+    }
+  }
+];
+
+// Названия типов пасс Роза Хутор
+export const rosaPassTypeNames: Record<RosaPassType, string> = {
+  standard: 'Стандартный ски-пасс',
+  training: 'Учебный ски-пасс',
+  'fast-track': 'Ски-пасс + Фаст-трек «Приоритет»',
+  evening: 'Вечерний ски-пасс'
+};
+
+// Описания типов пасс Роза Хутор
+export const rosaPassTypeDescriptions: Record<RosaPassType, string> = {
+  standard: 'Доступ на все подъемники курорта (кроме Тироль), дневное катание',
+  training: 'Учебный склон: 1 подъем на «Олимпия» + неограниченно на «Шале», «Ювента»',
+  'fast-track': 'Стандартный ски-пасс + быстрый проход на все подъемники',
+  evening: 'Вечернее катание 19:00-23:00 на учебном склоне'
+};
+
+// Функция для получения цены Роза Хутор
+export function getRosaHutorPrice(
+  date: Date,
+  passType: RosaPassType
+): number | null {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
+
+  const period = rosaHutorSkiPassPricing.find(
+    (p) => dateStr >= p.start && dateStr <= p.end
+  );
+
+  if (!period || !period.prices[passType]) {
+    return null;
+  }
+
+  return period.prices[passType]!.adult;
+}
+
+// Функция для получения периода Роза Хутор по дате
+export function getRosaPeriodByDate(date: Date): RosaPricePeriod | null {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
+
+  return (
+    rosaHutorSkiPassPricing.find((p) => dateStr >= p.start && dateStr <= p.end) ||
+    null
+  );
+}
