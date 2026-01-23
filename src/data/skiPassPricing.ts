@@ -5,13 +5,16 @@ export type AgeCategory = 'adult' | 'youth' | 'child';
 export type SkiPassCategory = 'single-day' | 'multi-day' | 'seasonal';
 
 // Типы курортов
-export type Resort = 'gazprom' | 'rosa-khutor';
+export type Resort = 'gazprom' | 'rosa-khutor' | 'krasnaya-polyana';
 
 // Типы склонов для Газпром
 export type PassType = 'full' | 'laura' | 'alpika' | 'evening-laura' | 'cross-country';
 
 // Типы ски-пассов для Роза Хутор
 export type RosaPassType = 'standard' | 'training' | 'fast-track' | 'evening' | 'seasonal' | 'annual';
+
+// Типы ски-пассов для Красной Поляны
+export type KrasnayaPolyanaPassType = 'day' | 'evening' | 'fast-track' | 'ya-sochinets' | 'family' | 'baby' | 'seasonal' | 'seasonal-evening';
 
 // Периоды действия
 export interface PricePeriod {
@@ -29,7 +32,8 @@ export interface PricePeriod {
 // Названия курортов
 export const resortNames: Record<Resort, string> = {
   gazprom: 'Газпром (Лаура + Альпика)',
-  'rosa-khutor': 'Роза Хутор'
+  'rosa-khutor': 'Роза Хутор',
+  'krasnaya-polyana': 'Красная Поляна'
 };
 
 // Структура данных для ски-пассов Газпром
@@ -390,4 +394,96 @@ export function getRosaPeriodByDate(date: Date): RosaPricePeriod | null {
     rosaHutorSkiPassPricing.find((p) => dateStr >= p.start && dateStr <= p.end) ||
     null
   );
+}
+
+// ===============================
+// Данные для курорта Красная Поляна
+// ===============================
+
+// Названия типов пасс Красная Поляна
+export const krasnayaPolyanaPassTypeNames: Record<KrasnayaPolyanaPassType, string> = {
+  day: 'Дневной',
+  evening: 'Вечерний',
+  'fast-track': 'Фаст-трек',
+  'ya-sochinets': 'Я-Сочинец',
+  family: 'Семейный',
+  baby: 'Малыш ски-пасс',
+  seasonal: 'Сезонный',
+  'seasonal-evening': 'Сезонный вечерний'
+};
+
+// Описания типов пасс Красная Поляна
+export const krasnayaPolyanaPassTypeDescriptions: Record<KrasnayaPolyanaPassType, string> = {
+  day: 'Дневное катание 08:00-16:30. Действует в выбранные дни периода.',
+  evening: 'Вечернее катание 16:30-22:00. Действует в выбранные дни периода.',
+  'fast-track': 'Проход на канатные дороги через выделенный турникет. Любые дни.',
+  'ya-sochinets': 'Специальный тариф для жителей Сочи. Действует в день покупки.',
+  family: 'Семейный тариф: 2 взрослых + 2 ребёнка. Действует в день покупки.',
+  baby: 'Малыш ски-пасс. Денежный, действует в день покупки, доступ через фаст-трек.',
+  seasonal: 'Именной. Неограниченное катание весь сезон 08:00-16:30 и 18:30-22:00.',
+  'seasonal-evening': 'Именной вечерний. Неограниченное катание весь сезон 18:30-22:00.'
+};
+
+// Структура данных для ски-пассов Красная Поляна (период 12.01.26-31.01.26)
+export interface KrasnayaPolyanaPricing {
+  passType: KrasnayaPolyanaPassType;
+  days?: number; // для многодневных
+  prices: {
+    adult: number; // "Малыш" на изображении - это взрослый с 15 лет
+    child?: number; // Взрослый - это дети 7-14 лет
+  };
+}
+
+export const krasnayaPolyanaPricing: KrasnayaPolyanaPricing[] = [
+  // Однодневные дневные
+  { passType: 'day', days: 1, prices: { adult: 4100, child: 2500 } },
+  // Многодневные дневные
+  { passType: 'day', days: 2, prices: { adult: 7400, child: 4500 } },
+  { passType: 'day', days: 3, prices: { adult: 11100, child: 6800 } },
+  { passType: 'day', days: 5, prices: { adult: 17400, child: 10600 } },
+  
+  // Однодневные вечерние
+  { passType: 'evening', days: 1, prices: { adult: 2500, child: 1700 } },
+  // Многодневные вечерние
+  { passType: 'evening', days: 2, prices: { adult: 4800, child: 3200 } },
+  { passType: 'evening', days: 3, prices: { adult: 6800, child: 4600 } },
+  { passType: 'evening', days: 5, prices: { adult: 10600, child: 7200 } },
+  
+  // Фаст-трек
+  { passType: 'fast-track', days: 1, prices: { adult: 8200, child: 4900 } },
+  { passType: 'fast-track', days: 2, prices: { adult: 14800, child: 8800 } },
+  { passType: 'fast-track', days: 3, prices: { adult: 20900, child: 12500 } },
+  { passType: 'fast-track', days: 5, prices: { adult: 32800, child: 19600 } },
+  
+  // Специальные тарифы
+  { passType: 'ya-sochinets', days: 1, prices: { adult: 3300, child: 2000 } },
+  { passType: 'family', days: 1, prices: { adult: 10700 } }, // 2 взрослых + 2 ребёнка
+  
+  // Малыш ски-пасс (денежный)
+  { passType: 'baby', days: 1, prices: { adult: 1 } },
+  { passType: 'baby', days: 3, prices: { adult: 300 } },
+  { passType: 'baby', days: 5, prices: { adult: 500 } },
+  
+  // Сезонные
+  { passType: 'seasonal', prices: { adult: 65500, child: 30000 } },
+  { passType: 'seasonal-evening', prices: { adult: 32750, child: 15000 } }
+];
+
+// Функция для получения цены Красная Поляна
+export function getKrasnayaPolyanaPrice(
+  passType: KrasnayaPolyanaPassType,
+  days: number,
+  ageCategory: AgeCategory
+): number | null {
+  const pass = krasnayaPolyanaPricing.find(
+    (p) => p.passType === passType && p.days === days
+  );
+  
+  if (!pass) return null;
+  
+  if (ageCategory === 'child' && pass.prices.child !== undefined) {
+    return pass.prices.child;
+  }
+  
+  return pass.prices.adult;
 }

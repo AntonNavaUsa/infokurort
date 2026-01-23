@@ -83,7 +83,7 @@ const SkiPasses = () => {
                   </div>
                 </CardContent>
               </Card>
-            ) : (
+            ) : selectedResort === 'rosa-khutor' ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -122,6 +122,47 @@ const SkiPasses = () => {
                     <p className="text-sm text-muted-foreground">
                       Услуга быстрого прохода на все основные подъемники курорта. 
                       Экономьте время в очередях!
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Mountain className="w-5 h-5 text-blue-600" />
+                    О курорте Красная Поляна
+                  </CardTitle>
+                  <CardDescription>
+                    Горнолыжный курорт в Сочи
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">Характеристики</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Современный курорт с развитой инфраструктурой и разнообразными трассами. 
+                      Отличный выбор для семейного отдыха и обучения.
+                    </p>
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      <Badge variant="secondary">Зеленые трассы</Badge>
+                      <Badge variant="secondary">Синие трассы</Badge>
+                      <Badge variant="secondary">Красные трассы</Badge>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <h4 className="font-semibold mb-2">Время катания</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Дневное катание: 08:00-16:30<br />
+                      Вечернее катание: 16:30-22:00
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t">
+                    <h4 className="font-semibold mb-2">Специальные предложения</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Семейные тарифы, льготы для жителей Сочи, фаст-трек доступ.
                     </p>
                   </div>
                 </CardContent>
@@ -196,7 +237,7 @@ const SkiPasses = () => {
                   </div>
                 </CardContent>
               </Card>
-            ) : (
+            ) : selectedResort === 'rosa-khutor' ? (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -261,6 +302,64 @@ const SkiPasses = () => {
                   </div>
                 </CardContent>
               </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Ticket className="w-5 h-5 text-blue-600" />
+                    Типы ски-пассов
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="text-xs font-semibold text-muted-foreground mb-2">Многодневные:</div>
+
+                  <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                    <div className="font-semibold text-sm mb-1 text-blue-700 dark:text-blue-400">Дневной</div>
+                    <div className="text-xs text-muted-foreground">
+                      Дневное катание 08:00-16:30. 1, 2, 3 или 5 дней. От 2 500₽ до 17 400₽.
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-sky-500/10 rounded-lg border border-sky-500/20">
+                    <div className="font-semibold text-sm mb-1 text-sky-700 dark:text-sky-400">Вечерний</div>
+                    <div className="text-xs text-muted-foreground">
+                      Вечернее катание 16:30-22:00. 1, 2, 3 или 5 дней. От 1 700₽ до 10 600₽.
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                    <div className="font-semibold text-sm mb-1 text-purple-700 dark:text-purple-400">Фаст-трек</div>
+                    <div className="text-xs text-muted-foreground">
+                      Быстрый проход через выделенный турникет. 1, 2, 3 или 5 дней. От 4 900₽ до 32 800₽.
+                    </div>
+                  </div>
+
+                  <div className="text-xs font-semibold text-muted-foreground mb-2 mt-4">Специальные:</div>
+
+                  <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                    <div className="font-semibold text-sm mb-1 text-green-700 dark:text-green-400">Я-Сочинец</div>
+                    <div className="text-xs text-muted-foreground">
+                      Для жителей Сочи. 1 день. <span className="font-semibold">2 000₽ - 3 300₽</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
+                    <div className="font-semibold text-sm mb-1 text-amber-700 dark:text-amber-400">Семейный</div>
+                    <div className="text-xs text-muted-foreground">
+                      2 взрослых + 2 ребёнка. <span className="font-semibold">10 700₽</span>
+                    </div>
+                  </div>
+
+                  <div className="text-xs font-semibold text-muted-foreground mb-2 mt-4">Сезонные:</div>
+
+                  <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                    <div className="font-semibold text-sm mb-1 text-purple-700 dark:text-purple-400">Сезонный именной</div>
+                    <div className="text-xs text-muted-foreground">
+                      Неограниченное катание весь сезон 08:00-16:30 и 18:30-22:00. <span className="font-semibold">30 000₽ - 65 500₽</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             {/* Важная информация */}
@@ -274,12 +373,19 @@ const SkiPasses = () => {
                     <li>• Молодежный: 15-25 лет</li>
                     <li>• Взрослый: от 26 лет</li>
                   </ul>
-                ) : (
+                ) : selectedResort === 'rosa-khutor' ? (
                   <ul className="space-y-1 mt-2">
                     <li>• Детям до 6 лет — 1 ₽ (бесплатно)</li>
                     <li>• Взрослый тариф: с 15 лет</li>
                     <li>• Скидки: инвалиды, ветераны, студенты</li>
                     <li>• Льготы только в кассе при предъявлении документов</li>
+                  </ul>
+                ) : (
+                  <ul className="space-y-1 mt-2">
+                    <li>• Детям до 6 лет — 4 100 ₽</li>
+                    <li>• Детский: 7-14 лет (указан как "Взрослый")</li>
+                    <li>• Взрослый: с 15 лет (указан как "Малыш")</li>
+                    <li>• Период действия: 12.01.26 - 31.01.26</li>
                   </ul>
                 )}
               </AlertDescription>

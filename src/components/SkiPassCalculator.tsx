@@ -15,6 +15,7 @@ import {
   type AgeCategory,
   type PassType,
   type RosaPassType,
+  type KrasnayaPolyanaPassType,
   type SkiPassCategory,
   type Resort,
   resortNames,
@@ -24,6 +25,8 @@ import {
   passTypeDescriptions,
   rosaPassTypeNames,
   rosaPassTypeDescriptions,
+  krasnayaPolyanaPassTypeNames,
+  krasnayaPolyanaPassTypeDescriptions,
   ageCategoryNames,
   getSkiPassPrice,
   getMultiDayPrice,
@@ -31,6 +34,7 @@ import {
   getPeriodByDate,
   getRosaHutorPrice,
   getRosaPeriodByDate,
+  getKrasnayaPolyanaPrice,
   periodInfo
 } from "@/data/skiPassPricing";
 
@@ -44,6 +48,7 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
   const [skiPassCategory, setSkiPassCategory] = useState<SkiPassCategory>('single-day');
   const [passType, setPassType] = useState<PassType>('full');
   const [rosaPassType, setRosaPassType] = useState<RosaPassType>('standard');
+  const [krasnayaPolyanaPassType, setKrasnayaPolyanaPassType] = useState<KrasnayaPolyanaPassType>('day');
   const [ageCategory, setAgeCategory] = useState<AgeCategory>('adult');
   const [date, setDate] = useState<Date>(new Date('2026-02-01'));
   const [multiDays, setMultiDays] = useState<number>(2);
@@ -76,6 +81,10 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
   } else if (resort === 'rosa-khutor') {
     // Роза Хутор поддерживает однодневные, сезонные и годовые ски-пассы
     price = getRosaHutorPrice(date, rosaPassType);
+    totalPrice = price;
+  } else if (resort === 'krasnaya-polyana') {
+    // Красная Поляна поддерживает разные типы с многодневными вариантами
+    price = getKrasnayaPolyanaPrice(krasnayaPolyanaPassType, multiDays, ageCategory);
     totalPrice = price;
   }
 
@@ -137,12 +146,27 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
               {renderAgeCategorySelector()}
             </TabsContent>
           </Tabs>
-        ) : (
+        ) : resort === 'rosa-khutor' ? (
           /* Роза Хутор - однодневные, сезонные и годовые */
           <div className="space-y-6">
             {renderRosaPassTypeSelector()}
             {/* Дата только для однодневных пассов */}
             {rosaPassType !== 'seasonal' && rosaPassType !== 'annual' && renderDateSelector()}
+          </div>
+        ) : (
+          /* Красная Поляна */
+          <div className="space-y-6">
+            {renderKrasnayaPolyanaPassTypeSelector()}
+            {/* Показываем селектор дней для типов с многодневными вариантами */}
+            {(krasnayaPolyanaPassType === 'day' || 
+              krasnayaPolyanaPassType === 'evening' || 
+              krasnayaPolyanaPassType === 'fast-track' ||
+              krasnayaPolyanaPassType === 'baby') && renderMultiDaysSelector()}
+            {/* Показываем категорию возраста для не семейных тарифов */}
+            {krasnayaPolyanaPassType !== 'family' && 
+             krasnayaPolyanaPassType !== 'seasonal' && 
+             krasnayaPolyanaPassType !== 'seasonal-evening' && 
+             renderAgeCategorySelector()}
           </div>
         )}
 
@@ -197,6 +221,73 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
                 <div className="font-semibold text-sm text-purple-700 dark:text-purple-400">{rosaPassTypeNames[type]}</div>
                 <div className="text-xs text-muted-foreground mt-1">
                   {rosaPassTypeDescriptions[type]}
+                </div>
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+    );
+  }
+
+  function renderKrasnayaPolyanaPassTypeSelector() {
+    const multiDayTypes: KrasnayaPolyanaPassType[] = ['day', 'evening', 'fast-track', 'baby'];
+    const specialTypes: KrasnayaPolyanaPassType[] = ['ya-sochinets', 'family'];
+    const seasonalTypes: KrasnayaPolyanaPassType[] = ['seasonal', 'seasonal-evening'];
+    
+    return (
+      <div className="space-y-3">
+        <Label className="text-base font-semibold flex items-center gap-2">
+          <Ticket className="w-4 h-4" />
+          Тип ски-пасса
+        </Label>
+        <RadioGroup value={krasnayaPolyanaPassType} onValueChange={(value) => setKrasnayaPolyanaPassType(value as KrasnayaPolyanaPassType)}>
+          {/* Многодневные */}
+          <div className="text-xs font-semibold text-muted-foreground mb-2 mt-2">Многодневные абонементы:</div>
+          {multiDayTypes.map((type) => (
+            <div
+              key={type}
+              className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+            >
+              <RadioGroupItem value={type} id={`kp-${type}`} className="mt-1" />
+              <Label htmlFor={`kp-${type}`} className="flex-1 cursor-pointer">
+                <div className="font-semibold text-sm">{krasnayaPolyanaPassTypeNames[type]}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {krasnayaPolyanaPassTypeDescriptions[type]}
+                </div>
+              </Label>
+            </div>
+          ))}
+          
+          {/* Специальные тарифы */}
+          <div className="text-xs font-semibold text-muted-foreground mb-2 mt-4">Специальные тарифы:</div>
+          {specialTypes.map((type) => (
+            <div
+              key={type}
+              className="flex items-start space-x-3 p-3 rounded-lg border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 transition-colors cursor-pointer"
+            >
+              <RadioGroupItem value={type} id={`kp-${type}`} className="mt-1" />
+              <Label htmlFor={`kp-${type}`} className="flex-1 cursor-pointer">
+                <div className="font-semibold text-sm text-blue-700 dark:text-blue-400">{krasnayaPolyanaPassTypeNames[type]}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {krasnayaPolyanaPassTypeDescriptions[type]}
+                </div>
+              </Label>
+            </div>
+          ))}
+
+          {/* Сезонные */}
+          <div className="text-xs font-semibold text-muted-foreground mb-2 mt-4">Сезонные:</div>
+          {seasonalTypes.map((type) => (
+            <div
+              key={type}
+              className="flex items-start space-x-3 p-3 rounded-lg border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 transition-colors cursor-pointer"
+            >
+              <RadioGroupItem value={type} id={`kp-${type}`} className="mt-1" />
+              <Label htmlFor={`kp-${type}`} className="flex-1 cursor-pointer">
+                <div className="font-semibold text-sm text-purple-700 dark:text-purple-400">{krasnayaPolyanaPassTypeNames[type]}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {krasnayaPolyanaPassTypeDescriptions[type]}
                 </div>
               </Label>
             </div>
@@ -298,6 +389,11 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
   }
 
   function renderMultiDaysSelector() {
+    // Для Красной Поляны доступны: 1, 2, 3, 5 дней (для baby: 1, 3, 5)
+    const availableDays = resort === 'krasnaya-polyana' 
+      ? (krasnayaPolyanaPassType === 'baby' ? [1, 3, 5] : [1, 2, 3, 5])
+      : [2, 3, 4, 5, 6, 7];
+    
     return (
       <div className="space-y-3">
         <Label className="text-base font-semibold">Количество дней</Label>
@@ -306,15 +402,18 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {[2, 3, 4, 5, 6, 7].map((d) => (
+            {availableDays.map((d) => (
               <SelectItem key={d} value={d.toString()}>
-                {d} {d < 5 ? 'дня' : 'дней'}
+                {d} {d === 1 ? 'день' : d < 5 ? 'дня' : 'дней'}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         <p className="text-xs text-muted-foreground">
-          Абонемент действует в любые {multiDays} {multiDays < 5 ? 'дня' : 'дней'} в период
+          {resort === 'krasnaya-polyana' 
+            ? `Абонемент на ${multiDays} ${multiDays === 1 ? 'день' : multiDays < 5 ? 'дня' : 'дней'}`
+            : `Абонемент действует в любые ${multiDays} ${multiDays < 5 ? 'дня' : 'дней'} в период`
+          }
         </p>
       </div>
     );
@@ -342,6 +441,10 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
               {resort === 'rosa-khutor' && rosaPassType !== 'seasonal' && rosaPassType !== 'annual' && 'Стоимость за день:'}
               {resort === 'rosa-khutor' && rosaPassType === 'seasonal' && 'Стоимость сезонного абонемента:'}
               {resort === 'rosa-khutor' && rosaPassType === 'annual' && 'Стоимость годового абонемента:'}
+              {resort === 'krasnaya-polyana' && (krasnayaPolyanaPassType === 'seasonal' || krasnayaPolyanaPassType === 'seasonal-evening') && 'Стоимость сезонного абонемента:'}
+              {resort === 'krasnaya-polyana' && krasnayaPolyanaPassType === 'family' && 'Стоимость семейного тарифа:'}
+              {resort === 'krasnaya-polyana' && krasnayaPolyanaPassType !== 'seasonal' && krasnayaPolyanaPassType !== 'seasonal-evening' && krasnayaPolyanaPassType !== 'family' && 
+                `Стоимость за ${multiDays} ${multiDays === 1 ? 'день' : multiDays < 5 ? 'дня' : 'дней'}:`}
             </span>
             <span className="text-2xl font-bold">
               {price.toLocaleString('ru-RU')} ₽
@@ -359,6 +462,12 @@ export function SkiPassCalculator({ defaultResort = 'gazprom', onResortChange }:
             {resort === 'rosa-khutor' && rosaPassType === 'fast-track' && <p>✓ Быстрый проход на все подъемники</p>}
             {resort === 'rosa-khutor' && rosaPassType === 'seasonal' && <p>✓ Безлимитное катание весь горнолыжный сезон 2025/26</p>}
             {resort === 'rosa-khutor' && rosaPassType === 'annual' && <p>✓ Горнолыжный сезон 2025/26 + летний сезон 2026</p>}
+            {resort === 'krasnaya-polyana' && krasnayaPolyanaPassType === 'day' && <p>✓ Дневное катание 08:00-16:30</p>}
+            {resort === 'krasnaya-polyana' && krasnayaPolyanaPassType === 'evening' && <p>✓ Вечернее катание 16:30-22:00</p>}
+            {resort === 'krasnaya-polyana' && krasnayaPolyanaPassType === 'fast-track' && <p>✓ Быстрый проход через выделенный турникет</p>}
+            {resort === 'krasnaya-polyana' && krasnayaPolyanaPassType === 'family' && <p>✓ Семейный тариф: 2 взрослых + 2 ребёнка</p>}
+            {resort === 'krasnaya-polyana' && krasnayaPolyanaPassType === 'baby' && <p>✓ Денежный, доступ через фаст-трек</p>}
+            {resort === 'krasnaya-polyana' && (krasnayaPolyanaPassType === 'seasonal' || krasnayaPolyanaPassType === 'seasonal-evening') && <p>✓ Именной, неограниченное катание весь сезон</p>}
           </div>
         </div>
       </div>
