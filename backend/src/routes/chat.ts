@@ -6,14 +6,19 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
   const { prisma } = fastify;
 
   const chatRequestSchema = z.object({
-    message: z.string().min(1),
+    messages: z.array(z.object({
+      role: z.string(),
+      content: z.string(),
+    })),
     sessionId: z.string().optional(),
   });
 
   // POST RAG-powered chat
   fastify.post('/chat', async (request, reply) => {
     try {
-      const { message, sessionId = `session-${Date.now()}` } = chatRequestSchema.parse(request.body);
+      const { messages, sessionId = `session-${Date.now()}` } = chatRequestSchema.parse(request.body);
+      const lastMessage = messages[messages.length - 1];
+      const message = lastMessage.content;
       const startTime = Date.now();
 
       // Use full-text search instead of vector search (pgvector not available)
