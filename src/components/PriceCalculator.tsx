@@ -59,10 +59,38 @@ export function PriceCalculator() {
   const [date, setDate] = useState<Date>(new Date());
   const [days, setDays] = useState<number>(1);
 
-  const filteredPrices = skiSchoolPricing.filter(p => p.category === category && p.resort === resort);
+  // Для Газпром фильтруем только single программы, для остальных - все
+  const filteredPrices = skiSchoolPricing.filter(p => {
+    if (p.category !== category || p.resort !== resort) return false;
+    // Для Газпром показываем только базовые программы (single)
+    if (resort === 'gazprom') return p.package === 'single';
+    return true;
+  });
+
   const selectedPrice = skiSchoolPricing.find(p => p.id === selectedId);
   const pricePerDay = selectedPrice ? calculatePrice(selectedId, date) : null;
-  const totalPrice = pricePerDay ? pricePerDay * days : null;
+  
+  // Для Газпром рассчитываем цену с учетом количества дней и скидок
+  let totalPrice: number | null = null;
+  if (pricePerDay) {
+    if (resort === 'gazprom' && selectedPrice?.package === 'single') {
+      // Для Газпром используем реальные коэффициенты из прайса
+      // Базовые цены: 1 день, 3 дня (коэф. ~2.89), 5 дней (коэф. ~4.53)
+      if (days === 1) {
+        totalPrice = pricePerDay;
+      } else if (days === 3) {
+        totalPrice = Math.round(pricePerDay * 2.89);
+      } else if (days === 5) {
+        totalPrice = Math.round(pricePerDay * 4.53);
+      } else {
+        // Для других значений используем линейную интерполяцию со скидкой
+        totalPrice = Math.round(pricePerDay * days * 0.92);
+      }
+    } else {
+      totalPrice = pricePerDay * days;
+    }
+  }
+  
   const season = getSeasonByDate(date, resort);
 
   // Функция для получения сравнительных цен на других курортах
@@ -257,7 +285,7 @@ export function PriceCalculator() {
         </div>
 
         {/* Количество дней */}
-        {selectedPrice && !selectedPrice.duration.includes('дня') && !selectedPrice.duration.includes('дней') && (
+        {selectedPrice && (resort === 'gazprom' || (!selectedPrice.duration.includes('дня') && !selectedPrice.duration.includes('дней'))) && (
           <div className="space-y-3">
             <Label className="text-base font-semibold">Количество дней</Label>
             <Select value={days.toString()} onValueChange={(v) => setDays(Number(v))}>
@@ -265,11 +293,21 @@ export function PriceCalculator() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {[1, 2, 3, 4, 5, 6, 7, 10, 14].map((n) => (
-                  <SelectItem key={n} value={n.toString()}>
-                    {n} {n === 1 ? 'день' : n < 5 ? 'дня' : 'дней'}
-                  </SelectItem>
-                ))}
+                {resort === 'gazprom' ? (
+                  // Для Газпром: 1, 3, 5 дней
+                  [1, 3, 5].map((n) => (
+                    <SelectItem key={n} value={n.toString()}>
+                      {n} {n === 1 ? 'день' : n < 5 ? 'дня' : 'дней'}
+                    </SelectItem>
+                  ))
+                ) : (
+                  // Для остальных: стандартный набор
+                  [1, 2, 3, 4, 5, 6, 7, 10, 14].map((n) => (
+                    <SelectItem key={n} value={n.toString()}>
+                      {n} {n === 1 ? 'день' : n < 5 ? 'дня' : 'дней'}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -278,7 +316,7 @@ export function PriceCalculator() {
         {/* Результат */}
         <div className="pt-6 border-t border-border">
           <div className="space-y-3">
-            {days > 1 && pricePerDay && !selectedPrice?.duration.includes('дня') && !selectedPrice?.duration.includes('дней') && (
+            {days > 1 && pricePerDay && (resort === 'gazprom' || (!selectedPrice?.duration.includes('дня') && !selectedPrice?.duration.includes('дней'))) && (
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Стоимость за 1 день</span>
                 <span className="font-semibold">{pricePerDay.toLocaleString('ru-RU')} ₽</span>
@@ -287,7 +325,7 @@ export function PriceCalculator() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs md:text-sm text-muted-foreground mb-1">
-                  {days > 1 && !selectedPrice?.duration.includes('дня') && !selectedPrice?.duration.includes('дней') ? 'Итоговая стоимость' : 'Стоимость'}
+                  {days > 1 && (resort === 'gazprom' || (!selectedPrice?.duration.includes('дня') && !selectedPrice?.duration.includes('дней'))) ? 'Итоговая стоимость' : 'Стоимость'}
                 </p>
                 <p className="text-2xl md:text-4xl font-bold text-primary">
                   {totalPrice ? `${totalPrice.toLocaleString('ru-RU')} ₽` : '—'}
