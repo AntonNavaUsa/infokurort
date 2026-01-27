@@ -70,20 +70,32 @@ export function PriceCalculator() {
   const selectedPrice = skiSchoolPricing.find(p => p.id === selectedId);
   const pricePerDay = selectedPrice ? calculatePrice(selectedId, date) : null;
   
-  // Для Газпром рассчитываем цену с учетом количества дней и скидок
+  // Для Газпром берем точные цены из прайса для пакетов 3 и 5 дней
   let totalPrice: number | null = null;
   if (pricePerDay) {
     if (resort === 'gazprom' && selectedPrice?.package === 'single') {
-      // Для Газпром используем реальные коэффициенты из прайса
-      // Базовые цены: 1 день, 3 дня (коэф. ~2.89), 5 дней (коэф. ~4.53)
       if (days === 1) {
         totalPrice = pricePerDay;
-      } else if (days === 3) {
-        totalPrice = Math.round(pricePerDay * 2.89);
-      } else if (days === 5) {
-        totalPrice = Math.round(pricePerDay * 4.53);
+      } else if (days === 3 || days === 5) {
+        // Ищем соответствующий пакет в прайсе
+        const packageType = days === 3 ? '3-days' : '5-days';
+        const packagePrice = skiSchoolPricing.find(p => 
+          p.resort === 'gazprom' &&
+          p.category === selectedPrice.category &&
+          p.type === selectedPrice.type &&
+          p.participants === selectedPrice.participants &&
+          p.package === packageType &&
+          p.duration.includes('2 часа') === selectedPrice.duration.includes('2 часа')
+        );
+        
+        if (packagePrice) {
+          totalPrice = calculatePrice(packagePrice.id, date);
+        } else {
+          // Если не нашли точный пакет, используем базовую цену * дни
+          totalPrice = pricePerDay * days;
+        }
       } else {
-        // Для других значений используем линейную интерполяцию со скидкой
+        // Для других количеств дней используем базовую цену со скидкой
         totalPrice = Math.round(pricePerDay * days * 0.92);
       }
     } else {
