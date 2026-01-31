@@ -13,6 +13,7 @@ import resortsRoutes from './routes/resorts.js';
 import knowledgeRoutes from './routes/knowledge.js';
 import chatRoutes from './routes/chat.js';
 import authRoutes from './routes/auth.js';
+import accommodationRoutes from './routes/accommodation.js';
 
 dotenv.config();
 
@@ -39,6 +40,9 @@ await fastify.register(helmet, {
 await fastify.register(cors, {
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
+    'http://localhost:8080',
+    'http://localhost:8081',
+    'http://localhost:8082',
     process.env.ADMIN_URL || 'http://localhost:3002',
   ],
   credentials: true,
@@ -65,6 +69,7 @@ await fastify.register(authRoutes, { prefix: '/api/auth' });
 await fastify.register(resortsRoutes, { prefix: '/api/resorts' });
 await fastify.register(knowledgeRoutes, { prefix: '/api/knowledge' });
 await fastify.register(chatRoutes, { prefix: '/api' });
+await fastify.register(accommodationRoutes, { prefix: '/api/accommodation' });
 
 // Graceful shutdown
 const closeGracefully = async (signal: string) => {

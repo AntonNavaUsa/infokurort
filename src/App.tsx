@@ -8,6 +8,7 @@ import Instructors from "./pages/Instructors";
 import SkiPasses from "./pages/SkiPasses";
 import Freeride from "./pages/Freeride";
 import About from "./pages/About";
+import AccommodationMap from "./pages/AccommodationMap";
 import NotFound from "./pages/NotFound";
 import { AILoggerPanel } from "./components/AILoggerPanel";
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/ski-passes" element={<SkiPasses />} />
           <Route path="/freeride" element={<Freeride />} />
           <Route path="/about" element={<About />} />
+          <Route path="/map" element={<AccommodationMap />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
