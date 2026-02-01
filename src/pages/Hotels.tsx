@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { Header } from "@/components/layout/Header";
+import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
 
 export default function Hotels() {
   useEffect(() => {
@@ -55,26 +57,32 @@ export default function Hotels() {
   }, []);
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">Где жить</h1>
-        <p className="text-lg text-muted-foreground max-w-3xl">
-          Подберите идеальное жилье для вашего отдыха на курортах Красной Поляны. 
-          Отели, апартаменты и гостевые дома рядом с горнолыжными склонами.
-        </p>
-      </div>
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 pt-24 pb-12">
+        <div className="container mx-auto px-4">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-4">Где жить</h1>
+            <p className="text-lg text-muted-foreground max-w-3xl">
+              Подберите идеальное жилье для вашего отдыха на курортах Красной Поляны. 
+              Отели, апартаменты и гостевые дома рядом с горнолыжными склонами.
+            </p>
+          </div>
 
-      {/* Контейнер для виджета Яндекс.Путешествия */}
-      <div 
-        id="travelWidget" 
-        className="w-full min-h-[600px] rounded-lg border bg-background shadow-sm"
-      ></div>
+          {/* Контейнер для виджета Яндекс.Путешествия */}
+          <div 
+            id="travelWidget" 
+            className="w-full min-h-[600px] rounded-lg border bg-background shadow-sm"
+          ></div>
 
-      <div className="mt-8 text-sm text-muted-foreground">
-        <p>
-          Бронирование осуществляется через партнерскую программу Яндекс.Путешествия
-        </p>
+          <div className="mt-8 text-sm text-muted-foreground">
+            <p>
+              Бронирование осуществляется через партнерскую программу Яндекс.Путешествия
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
+      <FloatingChatButton />
+    </>
   );
 }
