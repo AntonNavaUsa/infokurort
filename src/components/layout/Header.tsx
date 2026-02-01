@@ -8,6 +8,7 @@ import logo from "@/assets/logo.png";
 const navItems = [
   { href: "/", label: "Инструкторы" },
   { href: "/ski-passes", label: "Скипассы" },
+  { href: "/hotels", label: "Где жить" },
   { href: "/freeride", label: "Фрирайд" },
   { href: "/about", label: "О сервисе" },
 ];
