@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
-import { generateEmbedding, generateChatResponse } from '../services/openai.js';
+import { generateChatResponse } from '../services/openai.js';
 
 const chatRoutes: FastifyPluginAsync = async (fastify) => {
   const { prisma } = fastify;
@@ -72,7 +72,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
         return reply.code(400).send({ error: 'Invalid request', details: error.errors });
       }
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Failed to process chat request' });
+      return reply.code(500).send({ error: 'Failed to process chat request' });
     }
   });
 
@@ -97,7 +97,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
       return results;
     } catch (error) {
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Failed to search' });
+      return reply.code(500).send({ error: 'Failed to search' });
     }
   });
 
@@ -125,7 +125,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
       return { success: true };
     } catch (error) {
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Failed to save feedback' });
+      return reply.code(500).send({ error: 'Failed to save feedback' });
     }
   });
 };

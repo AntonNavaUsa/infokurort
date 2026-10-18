@@ -1,10 +1,5 @@
 import type { AccommodationSearchParams, Hotel } from '../../types/accommodation.js';
 
-interface OstrovokAPIResponse {
-  // Define based on actual Ostrovok API response
-  hotels: any[];
-}
-
 /**
  * Островок Affiliate API Service
  * 
@@ -14,7 +9,6 @@ interface OstrovokAPIResponse {
 export class OstrovokService {
   private apiKey: string;
   private affiliateId: string;
-  private baseUrl = 'https://api.ostrovok.ru/v1';
 
   constructor() {
     this.apiKey = process.env.OSTROVOK_API_KEY || '';
@@ -28,7 +22,7 @@ export class OstrovokService {
   /**
    * Поиск отелей по координатам
    */
-  async searchByCoordinates(params: AccommodationSearchParams): Promise<Hotel[]> {
+  async searchByCoordinates(_params: AccommodationSearchParams): Promise<Hotel[]> {
     if (!this.apiKey) {
       console.warn('Ostrovok API not configured');
       return [];
@@ -63,33 +57,6 @@ export class OstrovokService {
       console.error('Ostrovok API error:', error);
       return [];
     }
-  }
-
-  /**
-   * Нормализация данных Островок к Hotel типу
-   */
-  private normalizeResults(rawHotels: any[]): Hotel[] {
-    return rawHotels.map(hotel => ({
-      id: `ostrovok_${hotel.id}`,
-      externalId: hotel.id,
-      name: hotel.name,
-      description: hotel.description,
-      coordinates: {
-        lat: parseFloat(hotel.latitude),
-        lng: parseFloat(hotel.longitude),
-      },
-      distance: 0, // TODO: calculate
-      price: parseFloat(hotel.price?.amount || 0),
-      currency: hotel.price?.currency || 'RUB',
-      rating: hotel.rating || 0,
-      reviewCount: hotel.reviews_count || 0,
-      stars: hotel.stars || 0,
-      imageUrl: hotel.photos?.[0] || '',
-      images: hotel.photos || [],
-      ota: 'ostrovok' as const,
-      amenities: hotel.amenities || [],
-      deeplinkUrl: this.generateDeeplink(hotel.id),
-    }));
   }
 
   /**

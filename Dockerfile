@@ -6,7 +6,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Копирование package.json и package-lock.json
-COPY package*.json ./
+COPY package*.json .npmrc ./
 
 # Установка зависимостей
 RUN npm ci

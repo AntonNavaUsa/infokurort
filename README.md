@@ -64,6 +64,17 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
 
+### Deploy to the VDS with GitHub Actions
+
+Pushes to `main` run the frontend and backend production builds, then deploy to `/var/www/infokurort`. The deploy job requires these repository Actions secrets:
+
+- `DEPLOY_HOST`
+- `DEPLOY_USER`
+- `DEPLOY_SSH_KEY`
+- `DEPLOY_KNOWN_HOSTS`
+
+Use a dedicated deploy-only SSH account and a pinned host key. The deployment rebuilds and restarts only the `backend` and `infokurort` Compose services; it does not stop PostgreSQL or modify host Nginx, Certbot, or other projects. Keep `.env` and `backend/.env.production` on the server and out of Git.
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!

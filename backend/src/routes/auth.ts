@@ -60,7 +60,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
         return reply.code(400).send({ error: 'Invalid data', details: error.errors });
       }
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Login failed' });
+      return reply.code(500).send({ error: 'Login failed' });
     }
   });
 
@@ -107,7 +107,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
           return reply.code(400).send({ error: 'Invalid data', details: error.errors });
         }
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Registration failed' });
+        return reply.code(500).send({ error: 'Registration failed' });
       }
     },
   });
@@ -136,7 +136,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
         return admin;
       } catch (error) {
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to fetch user' });
+        return reply.code(500).send({ error: 'Failed to fetch user' });
       }
     },
   });

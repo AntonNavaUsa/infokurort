@@ -41,7 +41,7 @@ export interface Hotel {
   images?: string[];
   
   // Source
-  ota: 'ostrovok' | 'sutochno' | '101hotels' | 'yandex';
+  ota: 'ostrovok' | 'sutochno' | '101hotels' | 'yandex' | 'booking' | 'expedia' | 'agoda';
   
   // Amenities
   amenities?: string[];

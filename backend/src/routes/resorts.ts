@@ -22,7 +22,7 @@ const resortsRoutes: FastifyPluginAsync = async (fastify) => {
   });
 
   // GET all resorts
-  fastify.get('/', async (request, reply) => {
+  fastify.get('/', async (_request, reply) => {
     try {
       const resorts = await prisma.resort.findMany({
         orderBy: { name: 'asc' },
@@ -30,7 +30,7 @@ const resortsRoutes: FastifyPluginAsync = async (fastify) => {
       return resorts;
     } catch (error) {
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Failed to fetch resorts' });
+      return reply.code(500).send({ error: 'Failed to fetch resorts' });
     }
   });
 
@@ -49,7 +49,7 @@ const resortsRoutes: FastifyPluginAsync = async (fastify) => {
       return resort;
     } catch (error) {
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Failed to fetch resort' });
+      return reply.code(500).send({ error: 'Failed to fetch resort' });
     }
   });
 
@@ -66,7 +66,7 @@ const resortsRoutes: FastifyPluginAsync = async (fastify) => {
           return reply.code(400).send({ error: 'Invalid data', details: error.errors });
         }
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to create resort' });
+        return reply.code(500).send({ error: 'Failed to create resort' });
       }
     },
   });
@@ -87,7 +87,7 @@ const resortsRoutes: FastifyPluginAsync = async (fastify) => {
         return resort;
       } catch (error) {
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to update resort' });
+        return reply.code(500).send({ error: 'Failed to update resort' });
       }
     },
   });
@@ -108,7 +108,7 @@ const resortsRoutes: FastifyPluginAsync = async (fastify) => {
         return resort;
       } catch (error) {
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to update resort' });
+        return reply.code(500).send({ error: 'Failed to update resort' });
       }
     },
   });
@@ -125,7 +125,7 @@ const resortsRoutes: FastifyPluginAsync = async (fastify) => {
         return { success: true };
       } catch (error) {
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to delete resort' });
+        return reply.code(500).send({ error: 'Failed to delete resort' });
       }
     },
   });

@@ -22,11 +22,6 @@ export default async function affiliateRoutes(fastify: FastifyInstance) {
     try {
       const data = trackClickSchema.parse(request.body);
 
-      // Get IP and User-Agent
-      const ip = request.ip;
-      const userAgent = request.headers['user-agent'];
-      const referer = request.headers['referer'];
-
       // TODO: Get partnerId from widgetId
       // const widget = await fastify.prisma.widget.findUnique({
       //   where: { id: data.widgetId },
@@ -79,13 +74,7 @@ export default async function affiliateRoutes(fastify: FastifyInstance) {
   });
 
   // Generate deeplink
-  fastify.get('/deeplink', async (request, reply) => {
-    const { hotelId, ota, partnerId } = request.query as {
-      hotelId: string;
-      ota: string;
-      partnerId: string;
-    };
-
+  fastify.get('/deeplink', async (_request, reply) => {
     // TODO: Implement deeplink generation
     // const url = await deeplinkService.generate(hotelId, ota, partnerId);
 

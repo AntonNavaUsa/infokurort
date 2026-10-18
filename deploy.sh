@@ -1,77 +1,46 @@
 #!/bin/bash
 
-# Скрипт для деплоя на VDS
+set -Eeuo pipefail
 
-set -e  # Остановка при ошибке
-
-echo "🚀 Starting deployment..."
-
-# Переход в директорию проекта
 cd /var/www/infokurort
 
-# Остановка контейнеров
-echo "⏹️  Stopping containers..."
-docker compose down
-
-# Получение последних изменений
-echo "📥 Pulling latest changes..."
-git pull origin main
-
-# Проверка .env файлов
-if [ ! -f .env ]; then
-    echo "⚠️  Warning: .env file not found!"
-    echo "📝 Creating from .env.example..."
-    cp .env.example .env
-    echo "⚠️  Please edit .env file with your production values!"
-    exit 1
+if [[ ! -f .env || ! -f backend/.env.production ]]; then
+  echo "Required production environment files are missing." >&2
+  exit 1
 fi
 
-if [ ! -f backend/.env.production ]; then
-    echo "⚠️  Warning: backend/.env.production file not found!"
+docker compose config --quiet
+docker compose build backend infokurort
+docker compose run --rm --no-deps backend npm run prisma:migrate:deploy
+docker compose up -d --no-deps backend infokurort
+
+for _ in {1..60}; do
+  backend_status="$(docker inspect --format '{{.State.Health.Status}}' ski_backend 2>/dev/null || true)"
+  if [[ "$backend_status" == "healthy" ]]; then
+    break
+  fi
+  if [[ "$backend_status" == "unhealthy" ]]; then
+    echo "Backend failed its health check." >&2
     exit 1
-fi
-
-# Сборка новых образов
-echo "🔨 Building Docker images..."
-docker compose build --no-cache
-
-# Запуск контейнеров
-echo "▶️  Starting containers..."
-docker compose up -d
-
-# Ожидание запуска backend
-echo "⏳ Waiting for backend to be ready..."
-sleep 10
-
-# Применение миграций БД
-echo "🗄️  Running database migrations..."
-docker compose exec -T backend npm run prisma:migrate deploy || echo "⚠️  Migration warning (may be OK if DB already initialized)"
-
-# Проверка здоровья
-echo "🏥 Health check..."
-for i in {1..30}; do
-    if curl -f http://localhost:3001/health > /dev/null 2>&1; then
-        echo "✅ Backend is healthy!"
-        break
-    fi
-    echo "⏳ Waiting for backend... ($i/30)"
-    sleep 2
+  fi
+  sleep 2
 done
 
-# Очистка старых образов
-echo "🧹 Cleaning up old images..."
-docker image prune -f
+if [[ "$backend_status" != "healthy" ]]; then
+  echo "Backend did not become healthy before the timeout." >&2
+  exit 1
+fi
 
-# Показать статус
-echo ""
-echo "📊 Container status:"
+backend_port="$(docker compose port backend 3001 | awk -F: '{print $NF}')"
+frontend_port="$(docker compose port infokurort 80 | awk -F: '{print $NF}')"
+
+if [[ ! "$backend_port" =~ ^[0-9]+$ || ! "$frontend_port" =~ ^[0-9]+$ ]]; then
+  echo "Could not determine published application ports." >&2
+  exit 1
+fi
+
+curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${backend_port}/health" >/dev/null
+curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${frontend_port}/" >/dev/null
+
 docker compose ps
-
-echo ""
-echo "✅ Deployment completed at $(date)"
-echo "🌐 Site available at:"
-echo "   - http://infokurort.ru"
-echo "   - https://infokurort.ru (if SSL configured)"
-echo ""
-echo "📝 View logs: docker compose logs -f"
-
+echo "Deployment completed at $(date -Is)"

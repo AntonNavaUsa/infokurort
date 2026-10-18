@@ -1,6 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
-import { generateEmbedding } from '../services/openai.js';
 
 const knowledgeRoutes: FastifyPluginAsync = async (fastify) => {
   const { prisma } = fastify;
@@ -42,7 +41,7 @@ const knowledgeRoutes: FastifyPluginAsync = async (fastify) => {
       return entries;
     } catch (error) {
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Failed to fetch knowledge base' });
+      return reply.code(500).send({ error: 'Failed to fetch knowledge base' });
     }
   });
 
@@ -61,7 +60,7 @@ const knowledgeRoutes: FastifyPluginAsync = async (fastify) => {
       return entry;
     } catch (error) {
       fastify.log.error(error);
-      reply.code(500).send({ error: 'Failed to fetch entry' });
+      return reply.code(500).send({ error: 'Failed to fetch entry' });
     }
   });
 
@@ -89,7 +88,7 @@ const knowledgeRoutes: FastifyPluginAsync = async (fastify) => {
           return reply.code(400).send({ error: 'Invalid data', details: error.errors });
         }
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to create entry' });
+        return reply.code(500).send({ error: 'Failed to create entry' });
       }
     },
   });
@@ -117,7 +116,7 @@ const knowledgeRoutes: FastifyPluginAsync = async (fastify) => {
         return entry;
       } catch (error) {
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to update entry' });
+        return reply.code(500).send({ error: 'Failed to update entry' });
       }
     },
   });
@@ -145,7 +144,7 @@ const knowledgeRoutes: FastifyPluginAsync = async (fastify) => {
         return entry;
       } catch (error) {
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to update entry' });
+        return reply.code(500).send({ error: 'Failed to update entry' });
       }
     },
   });
@@ -162,7 +161,7 @@ const knowledgeRoutes: FastifyPluginAsync = async (fastify) => {
         return { success: true };
       } catch (error) {
         fastify.log.error(error);
-        reply.code(500).send({ error: 'Failed to delete entry' });
+        return reply.code(500).send({ error: 'Failed to delete entry' });
       }
     },
   });

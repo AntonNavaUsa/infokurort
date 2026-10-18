@@ -11,62 +11,9 @@
 import type { AccommodationSearchParams, Hotel } from '../../types/accommodation.js';
 import { overpassService, type OSMHotel } from '../osm/overpass.js';
 
-interface TravelpayoutsSearchParams {
-  location: string;
-  checkIn?: string;
-  checkOut?: string;
-  adults?: number;
-  limit?: number;
-  currency?: string;
-  language?: string;
-}
-
-interface TravelpayoutsHotel {
-  hotelId: number;
-  hotelName: string;
-  stars: number;
-  locationId: number;
-  location: {
-    lat: number;
-    lon: number;
-  };
-  priceFrom: number;
-  priceAvg: number;
-  pricePercentile?: {
-    '3': number;
-    '10': number;
-    '35': number;
-    '50': number;
-    '75': number;
-    '99': number;
-  };
-  photoCount?: number;
-  photos?: Array<{
-    url: string;
-    width: number;
-    height: number;
-  }>;
-  rating?: number;
-  address?: string;
-  distance?: number;
-}
-
-interface TravelpayoutsResponse {
-  hotels: TravelpayoutsHotel[];
-  location: {
-    name: string;
-    country: string;
-    geo: {
-      lat: number;
-      lon: number;
-    };
-  };
-}
-
 export class TravelpayoutsService {
   private token: string;
   private marker: number;
-  private baseUrl = 'https://engine.hotellook.com/api/v2';
 
   constructor() {
     this.token = process.env.TRAVELPAYOUTS_TOKEN || '3286214c096eaaaee7af14894a3f9586';
@@ -339,69 +286,6 @@ export class TravelpayoutsService {
     const data: TravelpayoutsResponse = await response.json() as TravelpayoutsResponse;
     return this.normalizeResults(data.hotels || []);
   } */
-
-  /**
-   * Нормализация данных Travelpayouts к Hotel типу
-   */
-  private normalizeResults(hotels: TravelpayoutsHotel[]): Hotel[] {
-    return hotels.map(hotel => ({
-      id: `travelpayouts_${hotel.hotelId}`,
-      externalId: hotel.hotelId.toString(),
-      name: hotel.hotelName,
-      description: `${hotel.stars || 0} звезд${hotel.address ? `, ${hotel.address}` : ''}`,
-      coordinates: {
-        lat: hotel.location.lat,
-        lng: hotel.location.lon,
-      },
-      distance: hotel.distance || 0,
-      price: hotel.priceFrom || hotel.priceAvg || 0,
-      currency: 'RUB',
-      originalPrice: hotel.pricePercentile?.['75'],
-      rating: hotel.rating || 0,
-      reviewCount: 0, // Travelpayouts не предоставляет количество отзывов в cache API
-      stars: hotel.stars || 0,
-      imageUrl: hotel.photos?.[0]?.url || '',
-      images: hotel.photos?.map(p => p.url) || [],
-      ota: 'ostrovok' as const, // Travelpayouts агрегирует в основном Booking, но показываем как ostrovok для консистентности
-      amenities: [],
-      deeplinkUrl: this.generateDeeplink(hotel.hotelId, hotel.locationId),
-    }));
-  }
-
-  /**
-   * Генерация affiliate deeplink
-   * Использует Travelpayouts redirect URL
-   */
-  private generateDeeplink(hotelId: number, locationId: number): string {
-    const baseUrl = 'https://search.hotellook.com/';
-    const params = new URLSearchParams({
-      hotelId: hotelId.toString(),
-      locationId: locationId.toString(),
-      marker: this.marker.toString(),
-      currency: 'RUB',
-      language: 'ru',
-    });
-
-    return `${baseUrl}?${params.toString()}`;
-  }
-
-  /**
-   * Фильтрация отелей по радиусу от центральной точки
-   */
-  private filterByRadius(hotels: Hotel[], centerLat: number, centerLng: number, radiusMeters: number): Hotel[] {
-    return hotels
-      .map(hotel => {
-        const distance = this.calculateDistance(
-          centerLat,
-          centerLng,
-          hotel.coordinates.lat,
-          hotel.coordinates.lng
-        );
-        return { ...hotel, distance };
-      })
-      .filter(hotel => hotel.distance <= radiusMeters)
-      .sort((a, b) => a.distance - b.distance);
-  }
 
   /**
    * Построить описание отеля из OSM данных

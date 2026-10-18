@@ -34,7 +34,7 @@ export default async function accommodationRoutes(fastify: FastifyInstance) {
       // if (cached) return reply.send(cached);
 
       // PoC: Получаем данные из Travelpayouts сервиса
-      fastify.log.info('Searching accommodations with Travelpayouts:', params);
+      fastify.log.info({ params }, 'Searching accommodations with Travelpayouts');
       const results = await travelpayoutsService.searchByCoordinates(params);
 
       // Response
@@ -67,9 +67,7 @@ export default async function accommodationRoutes(fastify: FastifyInstance) {
   });
 
   // Get accommodation details
-  fastify.get('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string };
-
+  fastify.get('/:id', async (_request, reply) => {
     // TODO: Implement get by ID
     return reply.status(501).send({
       error: 'Not implemented yet',
