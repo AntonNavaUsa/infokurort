@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
 import { PriceCalculator } from "@/components/PriceCalculator";
+import { InstructorLeadForm } from "@/components/InstructorLeadForm";
 import { 
   Building2, 
   UserCheck, 
@@ -139,7 +140,7 @@ const Instructors = () => {
         </section>
 
         {/* Price Calculator */}
-        <section className="py-16">
+        <section id="calculator" className="py-16 scroll-mt-24">
           <div className="container mx-auto px-4 max-w-2xl">
             <PriceCalculator />
           </div>
@@ -269,7 +270,7 @@ const Instructors = () => {
         </section>
 
         {/* Resorts */}
-        <section className="py-16">
+        <section id="schools" className="py-16 scroll-mt-24">
           <div className="container mx-auto px-4">
             <h2 className="font-display text-3xl font-bold text-foreground mb-10">
               Школы и инструкторы по курортам
@@ -313,6 +314,41 @@ const Instructors = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Lead form */}
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+              <div className="space-y-5">
+                <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-primary">
+                  Подбор без лишней траты времени
+                </div>
+                <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
+                  Найдём инструктора под ваш уровень и дату
+                </h2>
+                <p className="text-base text-muted-foreground">
+                  Если не хочется листать десятки сайтов, отправьте короткий запрос — мы быстро определим оптимальный формат: новичок, детский урок, семейный день или индивидуальная программа.
+                </p>
+                <ul className="space-y-3 text-sm text-muted-foreground">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="mt-0.5 h-4 w-4 text-green-500" />
+                    <span>Подберём вариант по уровню, возрасту и цели поездки.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="mt-0.5 h-4 w-4 text-green-500" />
+                    <span>Покажем разницу официальной школы и аккредитованного частного инструктора.</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle className="mt-0.5 h-4 w-4 text-green-500" />
+                    <span>Сэкономим время на выборе безопасного и понятного варианта.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <InstructorLeadForm />
             </div>
           </div>
         </section>

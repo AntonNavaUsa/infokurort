@@ -14,6 +14,7 @@ import knowledgeRoutes from './routes/knowledge.js';
 import chatRoutes from './routes/chat.js';
 import authRoutes from './routes/auth.js';
 import accommodationRoutes from './routes/accommodation.js';
+import instructorRequestsRoutes from './routes/instructorRequests.js';
 
 dotenv.config();
 
@@ -70,6 +71,7 @@ await fastify.register(resortsRoutes, { prefix: '/api/resorts' });
 await fastify.register(knowledgeRoutes, { prefix: '/api/knowledge' });
 await fastify.register(chatRoutes, { prefix: '/api' });
 await fastify.register(accommodationRoutes, { prefix: '/api/accommodation' });
+await fastify.register(instructorRequestsRoutes, { prefix: '/api/instructor-requests' });
 
 // Graceful shutdown
 const closeGracefully = async (signal: string) => {

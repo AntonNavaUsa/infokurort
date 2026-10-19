@@ -36,7 +36,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
 
       // Build context from relevant documents
       const context = relevantDocs
-        .map((doc) => `[${doc.category}] ${doc.title}\n${doc.content}`)
+        .map((doc: { category: string; title: string; content: string }) => `[${doc.category}] ${doc.title}\n${doc.content}`)
         .join('\n\n---\n\n');
 
       // Generate response using LLM
@@ -48,7 +48,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
           sessionId,
           userMessage: message,
           assistantResponse: response,
-          contextUsed: relevantDocs.map((doc) => ({
+          contextUsed: relevantDocs.map((doc: { id: number; title: string; category: string }) => ({
             id: doc.id,
             title: doc.title,
             category: doc.category,
@@ -60,7 +60,7 @@ const chatRoutes: FastifyPluginAsync = async (fastify) => {
 
       return {
         response,
-        sources: relevantDocs.map((doc) => ({
+        sources: relevantDocs.map((doc: { id: number; title: string; category: string }) => ({
           id: doc.id,
           title: doc.title,
           category: doc.category,

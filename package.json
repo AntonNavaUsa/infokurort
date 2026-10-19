@@ -9,7 +9,7 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:admin": "cd admin && npm run dev",
     "dev:frontend": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/generate-seo-pages.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"

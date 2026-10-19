@@ -208,102 +208,19 @@ docker compose exec backend npm run db:seed
 
 ---
 
-## 🌐 Настройка Nginx (reverse proxy)
+## 🌐 Общий HTTPS proxy и сертификаты
 
-### Зачем нужен Nginx?
+На production-сервере порты 80/443 обслуживает общий Docker Nginx proxy проекта `/root/salon-saas/infra`. Не устанавливайте отдельный host Nginx для Infokurort, не запускайте `certbot --nginx` и не меняйте общие сертификаты вручную: это может повлиять на другие домены.
 
-- SSL/TLS сертификаты (HTTPS)
-- Проксирование запросов к backend API
-- Кэширование и сжатие
-- Балансировка нагрузки
-
-### 1. Установка Nginx
+Infokurort использует общий Let's Encrypt сертификат `shared-sites`, который покрывает `infokurort.ru`, `chiozp.ru` и `szntravel.ru`. Файлы находятся в `/root/salon-saas/infra/certbot/conf`; их автоматическое продление выполняет контейнер `salon_certbot`. Проверить состояние можно командами:
 
 ```bash
-apt install -y nginx
+docker exec salon_certbot certbot certificates
+docker exec salon_web nginx -t
+curl -I https://infokurort.ru/
 ```
 
-### 2. Создание конфигурации сайта
-
-```bash
-nano /etc/nginx/sites-available/infokurort.ru
-```
-
-Скопируйте и вставьте следующую конфигурацию:
-
-```nginx
-server {
-    listen 80;
-    server_name infokurort.ru www.infokurort.ru;
-
-    # Логи
-    access_log /var/log/nginx/infokurort.access.log;
-    error_log /var/log/nginx/infokurort.error.log;
-
-    # Frontend (SPA)
-    location / {
-        proxy_pass http://localhost:80;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    # Backend API
-    location /api/ {
-        proxy_pass http://localhost:3001;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    # Health check
-    location /health {
-        proxy_pass http://localhost:3001/health;
-    }
-}
-```
-
-### 3. Активация конфигурации
-
-```bash
-# Создание символической ссылки
-ln -s /etc/nginx/sites-available/infokurort.ru /etc/nginx/sites-enabled/
-
-# Удаление дефолтной конфигурации
-rm /etc/nginx/sites-enabled/default
-
-# Проверка конфигурации
-nginx -t
-
-# Перезагрузка Nginx
-systemctl reload nginx
-systemctl enable nginx
-```
-
----
-
-## 🔒 Установка SSL сертификата (HTTPS)
-
-### Использование Let's Encrypt (бесплатно)
-
-```bash
-# Установка Certbot
-apt install -y certbot python3-certbot-nginx
-
-# Получение сертификата
-certbot --nginx -d infokurort.ru -d www.infokurort.ru
-
-# Автообновление сертификата (тест)
-certbot renew --dry-run
-```
-
-Certbot автоматически настроит SSL и обновит вашу конфигурацию Nginx.
+Изменение общей конфигурации proxy затрагивает несколько сайтов и требует отдельной процедуры обслуживания. Обычный деплой Infokurort эту конфигурацию, контейнер proxy и сертификаты не меняет.
 
 ---
 
@@ -324,12 +241,9 @@ cd /var/www/infokurort
 ./deploy.sh
 ```
 
-Скрипт выполнит:
-1. ⏹️ Остановку контейнеров
-2. 📥 Получение последних изменений из Git
-3. 🔨 Пересборку Docker образов
-4. ▶️ Запуск контейнеров
-5. 🧹 Очистку старых образов
+Скрипт использует уже размещённую в `/var/www/infokurort` версию проекта. Он проверяет конфигурацию, собирает только образы `backend` и `infokurort`, применяет миграции и обновляет только эти два сервиса. Он не выполняет `git pull`, не останавливает PostgreSQL, не управляет системным Nginx или Certbot и не удаляет сертификаты или Docker volumes.
+
+На общем сервере не используйте для деплоя `docker compose down`, `docker compose down -v` или глобальные команды очистки Docker. Для HTTPS и сертификатов следуйте отдельной процедуре обслуживания общего proxy; не удаляйте и не пересоздавайте каталог сертификатов и не меняйте конфигурации других проектов.
 
 ---
 
@@ -350,14 +264,8 @@ docker compose restart
 # Перезапуск одного сервиса
 docker compose restart backend
 
-# Остановка всех сервисов
-docker compose down
-
-# Остановка и удаление volumes (ВНИМАНИЕ: удалит данные БД!)
-docker compose down -v
-
-# Пересборка и перезапуск
-docker compose up -d --build
+# Пересборка и перезапуск только приложения (без базы данных)
+docker compose up -d --build --no-deps backend infokurort
 
 # Вход в контейнер
 docker compose exec backend sh
@@ -387,8 +295,8 @@ docker stats
 # Использование диска
 docker system df
 
-# Очистка неиспользуемых ресурсов
-docker system prune -a
+# На общем сервере не запускайте глобальную очистку Docker:
+# она может затронуть ресурсы других проектов.
 ```
 
 ---
@@ -430,8 +338,8 @@ docker compose exec postgres pg_isready -U ski_user
 # Проверить использование
 df -h
 
-# Очистка Docker
-docker system prune -a --volumes
+# Не запускайте глобальную очистку Docker на общем сервере:
+# она может затронуть контейнеры, образы и volumes других проектов.
 
 # Удаление старых логов
 journalctl --vacuum-time=7d
@@ -465,16 +373,13 @@ cd /var/www/infokurort
 cd /var/www/infokurort
 
 # Остановка
-docker compose down
+# Не останавливайте общий Compose-стек на production-сервере.
 
 # Получение обновлений
 git pull origin main
 
-# Пересборка
-docker compose build --no-cache
-
-# Запуск
-docker compose up -d
+# Безопасный деплой только приложения
+./deploy.sh
 
 # Проверка
 docker compose logs -f

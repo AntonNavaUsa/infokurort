@@ -73,7 +73,9 @@ Pushes to `main` run the frontend and backend production builds, then deploy to 
 - `DEPLOY_SSH_KEY`
 - `DEPLOY_KNOWN_HOSTS`
 
-Use a dedicated deploy-only SSH account and a pinned host key. The deployment rebuilds and restarts only the `backend` and `infokurort` Compose services; it does not stop PostgreSQL or modify host Nginx, Certbot, or other projects. Keep `.env` and `backend/.env.production` on the server and out of Git.
+Use a dedicated deploy-only SSH account and a pinned host key. The deployment rebuilds and restarts only the `backend` and `infokurort` Compose services; it does not stop PostgreSQL, recreate the shared HTTPS proxy, or modify Certbot, certificate files, certificate volumes, or other projects. HTTPS is handled by the shared Docker Nginx proxy in `/root/salon-saas/infra`; the `salon_certbot` service renews the shared certificate that covers Infokurort and the other hosted domains. Keep `.env` and `backend/.env.production` on the server and out of Git.
+
+On this shared server, never use `docker compose down`, `docker compose down -v`, or global Docker prune commands for deployment. Use the project deploy script, which updates only the application services.
 
 ## Can I connect a custom domain to my Lovable project?
 
