@@ -15,20 +15,19 @@ export default {
   	extend: {
   		fontFamily: {
   			display: [
-  				'Playfair Display',
-  				'serif'
+  				'Onest',
+  				'ui-sans-serif',
+  				'system-ui',
+  				'sans-serif'
   			],
   			sans: [
-  				'Inter',
+  				'Onest',
   				'ui-sans-serif',
   				'system-ui',
   				'-apple-system',
-  				'BlinkMacSystemFont',
   				'Segoe UI',
   				'Roboto',
-  				'Helvetica Neue',
   				'Arial',
-  				'Noto Sans',
   				'sans-serif'
   			],
   			serif: [
@@ -94,6 +93,8 @@ export default {
   			glacier: 'hsl(var(--glacier-blue))',
   			sunset: 'hsl(var(--sunset-warm))',
   			frost: 'hsl(var(--frost))',
+  			pine: 'hsl(var(--pine))',
+  			signal: 'hsl(var(--signal))',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',

@@ -1,8 +1,9 @@
 import { Header } from "@/components/layout/Header";
-import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
-import { Shield, AlertTriangle, Mountain, Calendar, Users, MessageCircle } from "lucide-react";
+import { LEAD_FORM_HREF } from "@/components/layout/nav";
+import { PageHero } from "@/components/layout/PageHero";
+import { Shield, AlertTriangle, Mountain, Calendar, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const formats = [
   {
@@ -41,31 +42,18 @@ const safetyRules = [
 ];
 
 const Freeride = () => {
-  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <FloatingChatButton />
       
-      <main className="pt-20 md:pt-24">
-        {/* Hero */}
-        <section className="relative py-16 md:py-24 overflow-hidden">
-          <div className="absolute inset-0 gradient-frost opacity-50" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-glacier/10 rounded-full blur-3xl" />
-          
-          <div className="relative container mx-auto px-4">
-            <div className="max-w-3xl">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Фрирайд
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8">
-                Катание за пределами подготовленных трасс — это свобода, адреналин 
-                и нетронутый снег. Но только с профессиональным гидом.
-              </p>
-            </div>
-          </div>
-        </section>
+      <main>
+        <PageHero
+          icon={Mountain}
+          eyebrow="Фрирайд"
+          title="Фрирайд в Красной Поляне"
+          lead="Катание за пределами подготовленных трасс — это свобода и нетронутый снег. Но только с сертифицированным гидом и лавинным снаряжением."
+        />
 
         {/* Why guide */}
         <section className="py-16 bg-destructive/5 border-y border-destructive/20">
@@ -166,19 +154,17 @@ const Freeride = () => {
         </section>
 
         {/* CTA */}
-        <section className="py-16 bg-card/30">
+        <section className="pb-16">
           <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto text-center p-8 bg-primary/5 rounded-2xl border border-primary/20">
-              <MessageCircle className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h2 className="font-display text-2xl font-bold text-foreground mb-4">
-                Опишите ваш запрос в чате
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Расскажите о вашем опыте, желаемых датах и формате — 
-                подберём программу и гида под вас.
-              </p>
-              <Button variant="hero" size="lg" onClick={() => navigate("/")}>
-                Перейти в чат
+            <div className="flex flex-col gap-6 rounded-xl bg-secondary/60 p-6 md:flex-row md:items-center md:justify-between md:p-8">
+              <div className="max-w-2xl">
+                <h2 className="text-2xl font-bold">Нужен гид или инструктор по фрирайду?</h2>
+                <p className="mt-2 text-muted-foreground">
+                  Оставьте заявку — уточним опыт, даты и формат и подберём сертифицированного специалиста.
+                </p>
+              </div>
+              <Button asChild size="lg" className="h-12 shrink-0 rounded-lg px-6 font-semibold">
+                <Link to={LEAD_FORM_HREF}>Оставить заявку</Link>
               </Button>
             </div>
           </div>
