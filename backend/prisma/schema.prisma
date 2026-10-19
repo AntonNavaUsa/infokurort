@@ -74,3 +74,23 @@ model ChatLog {
   @@index([createdAt])
   @@map("chat_logs")
 }
+
+model InstructorRequest {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  contact     String   @db.VarChar(100)
+  resort      String   @db.VarChar(50)
+  dates       String?  @db.VarChar(100)
+  learner     String   @db.VarChar(30)
+  childAge    String?  @map("child_age") @db.VarChar(30)
+  discipline  String   @db.VarChar(30)
+  level       String   @db.VarChar(50)
+  page        String?  @db.VarChar(200)
+  attribution Json?    @db.JsonB // landingPage, referrer, utm_*
+  status      String   @default("new") @db.VarChar(20) // new, in_progress, done, spam
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([status])
+  @@map("instructor_requests")
+}

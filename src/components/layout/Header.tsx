@@ -1,115 +1,98 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/logo.png";
-
-const navItems = [
-  { href: "/", label: "Справочная" },
-  { href: "/instruktory", label: "Инструкторы" },
-  { href: "/ski-passes", label: "Ски-пассы" },
-  { href: "/hotels", label: "Где остановиться" },
-  { href: "/freeride", label: "Фрирайд" },
-  { href: "/about", label: "О проекте" },
-];
+import { InfoMark } from "./InfoMark";
+import { LEAD_FORM_HREF, navItems } from "./nav";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
+  useEffect(() => setIsOpen(false), [location.pathname, location.hash]);
+
+  const isActive = (href: string) =>
+    location.pathname === href || location.pathname.startsWith(`${href}/`);
+
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between gap-4 md:h-20">
-          <Link
-            to="/"
-            onClick={() => setIsOpen(false)}
-            className="flex shrink-0 items-center gap-2.5 text-slate-900 transition-opacity hover:opacity-80"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50">
-              <img src={logo} alt="" aria-hidden="true" className="h-8 w-8 object-contain" />
-            </span>
-            <span>
-              <span className="block font-sans text-lg font-bold leading-tight">Инфокурорт</span>
-              <span className="block text-[10px] leading-tight text-slate-500">справочная Красной Поляны</span>
+        <div className="flex h-16 items-center justify-between gap-4">
+          <Link to="/" className="flex shrink-0 items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <InfoMark className="h-9 w-9" />
+            <span className="leading-none">
+              <span className="block text-[17px] font-bold tracking-tight text-foreground">Инфокурорт</span>
+              <span className="mt-1 block text-[11px] font-medium text-muted-foreground">справочная Красной Поляны</span>
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-0.5 lg:flex">
-            {navItems.map((item) => {
-              const isActive = item.href === "/"
-                ? location.pathname === "/"
-                : location.pathname === item.href || location.pathname.startsWith(`${item.href}/`);
-
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={cn(
-                    "rounded-full px-3 py-2 text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-sky-50 text-sky-900"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-                  )}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+          <nav aria-label="Разделы справочной" className="hidden items-center gap-1 lg:flex">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                aria-current={isActive(item.href) ? "page" : undefined}
+                className={cn(
+                  "relative rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  isActive(item.href)
+                    ? "text-primary after:absolute after:inset-x-3 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-primary"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                {item.short}
+              </Link>
+            ))}
           </nav>
 
-          <div className="hidden shrink-0 xl:flex">
-            <Link to="/instruktory#calculator">
-              <Button className="rounded-full bg-sky-700 text-white hover:bg-sky-800">
+          <div className="flex items-center gap-2">
+            <Button asChild className="hidden h-10 rounded-lg px-4 font-semibold sm:inline-flex">
+              <Link to={LEAD_FORM_HREF}>
                 Подобрать инструктора
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
+              aria-expanded={isOpen}
+              className="rounded-lg lg:hidden"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
           </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
-            aria-expanded={isOpen}
-            className="rounded-full text-slate-700 hover:bg-slate-100 lg:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
         </div>
-
-        {isOpen && (
-          <nav className="space-y-1 border-t border-slate-100 py-3 lg:hidden">
-            {navItems.map((item) => {
-              const isActive = item.href === "/"
-                ? location.pathname === "/"
-                : location.pathname === item.href || location.pathname.startsWith(`${item.href}/`);
-
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={cn(
-                    "block rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                    isActive
-                      ? "bg-sky-50 text-sky-900"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900",
-                  )}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-            <Link to="/instruktory#calculator" onClick={() => setIsOpen(false)} className="block pt-2">
-              <Button className="w-full rounded-full bg-sky-700 text-white hover:bg-sky-800">
-                Подобрать инструктора
-              </Button>
-            </Link>
-          </nav>
-        )}
       </div>
+
+      {isOpen && (
+        <nav aria-label="Разделы справочной" className="border-t border-border/70 bg-background lg:hidden">
+          <div className="container mx-auto grid gap-1 px-4 py-3">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                aria-current={isActive(item.href) ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-3 text-[15px] font-medium transition-colors",
+                  isActive(item.href) ? "bg-secondary text-secondary-foreground" : "text-foreground hover:bg-muted",
+                )}
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+                  <item.icon className="h-4 w-4" />
+                </span>
+                {item.label}
+              </Link>
+            ))}
+            <Button asChild size="lg" className="mt-2 rounded-lg font-semibold sm:hidden">
+              <Link to={LEAD_FORM_HREF}>
+                Подобрать инструктора
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }

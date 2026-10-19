@@ -1,16 +1,22 @@
+import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
-import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
+import { LEAD_FORM_HREF } from "@/components/layout/nav";
+import { PageHero } from "@/components/layout/PageHero";
 import { PriceCalculator } from "@/components/PriceCalculator";
 import { InstructorLeadForm } from "@/components/InstructorLeadForm";
-import { 
-  Building2, 
-  UserCheck, 
-  AlertTriangle, 
-  MessageCircle, 
-  ExternalLink,
+import { site } from "@/data/site";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Building2,
+  Calculator,
   CheckCircle,
+  ExternalLink,
+  Info,
+  Shield,
+  UserCheck,
+  Users,
   XCircle,
-  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -113,155 +119,158 @@ const resorts = [
   },
 ];
 
+const typeTone = {
+  primary: { bar: "bg-primary", icon: "bg-primary text-primary-foreground", note: "text-primary" },
+  glacier: { bar: "bg-glacier", icon: "bg-glacier text-white", note: "text-glacier" },
+  sunset: { bar: "bg-sunset", icon: "bg-sunset text-white", note: "text-sunset" },
+} as const;
+
 const Instructors = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <FloatingChatButton />
-      
-      <main className="pt-20 md:pt-24">
-        {/* Hero */}
-        <section className="relative py-16 md:py-24 overflow-hidden">
-          <div className="absolute inset-0 gradient-frost opacity-50" />
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-          
-          <div className="relative container mx-auto px-4">
-            <div className="max-w-3xl">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Инструкторы и школы катания в Красной Поляне
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                В Красной Поляне работают десятки школ и инструкторов.
-                Мы собрали все официальные школы курортов и объяснили, какие бывают инструкторы 
-                и в чём между ними разница, чтобы вы могли выбрать безопасно и осознанно.
-              </p>
-            </div>
+
+      <main>
+        <PageHero
+          icon={Users}
+          eyebrow="Инструкторы и школы"
+          title="Инструкторы и школы катания в Красной Поляне"
+          lead="В Красной Поляне работают десятки школ и инструкторов. Собрали школы курортов и объяснили, какие бывают инструкторы и чем они отличаются, чтобы выбрать безопасно и осознанно."
+        >
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" className="h-12 rounded-lg px-6 font-semibold">
+              <Link to={LEAD_FORM_HREF}>
+                Подобрать инструктора
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="h-12 rounded-lg bg-card px-6 font-semibold">
+              <a href="#calculator">
+                <Calculator className="h-4 w-4" />
+                Рассчитать стоимость
+              </a>
+            </Button>
+          </div>
+        </PageHero>
+
+        {/* Коротко */}
+        <section className="container mx-auto px-4 pt-10">
+          <div className="max-w-3xl rounded-xl border-l-4 border-primary bg-card p-5 shadow-soft">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Коротко</p>
+            <p className="mt-2 leading-relaxed text-foreground/90">
+              Учить на трассах имеют право школы курортов и аккредитованные частные инструкторы. Стоимость занятия в школе посчитает калькулятор ниже, а подобрать инструктора под ваши даты и уровень поможем по заявке.
+            </p>
           </div>
         </section>
 
-        {/* Price Calculator */}
-        <section id="calculator" className="py-16 scroll-mt-24">
-          <div className="container mx-auto px-4 max-w-2xl">
-            <PriceCalculator />
-          </div>
-        </section>
-
-        {/* Instructor Types */}
-        <section className="py-16 bg-card/30">
+        {/* Калькулятор */}
+        <section id="calculator" className="scroll-mt-24 py-12 md:py-16">
           <div className="container mx-auto px-4">
-            <h2 className="font-display text-3xl font-bold text-foreground mb-10">
-              Какие бывают инструкторы
-            </h2>
-            <div className="grid gap-8">
-              {instructorTypes.map((type) => (
-                <div 
-                  key={type.title}
-                  className={`p-6 md:p-8 bg-card rounded-xl border ${
-                    type.warning 
-                      ? "border-sunset/30 bg-sunset/5" 
-                      : "border-border/50"
-                  }`}
-                >
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      type.color === "primary" ? "bg-primary/10" :
-                      type.color === "glacier" ? "bg-glacier/10" :
-                      "bg-sunset/10"
-                    }`}>
-                      <type.icon className={`w-7 h-7 ${
-                        type.color === "primary" ? "text-primary" :
-                        type.color === "glacier" ? "text-glacier" :
-                        "text-sunset"
-                      }`} />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-display text-xl font-semibold text-foreground mb-2">
-                        {type.title}
-                      </h3>
-                      <p className="text-muted-foreground mb-4">{type.description}</p>
-                      <ul className="space-y-2 mb-4">
-                        {type.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-sm">
-                            {feature.positive ? (
-                              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                            ) : (
-                              <XCircle className="w-4 h-4 text-sunset mt-0.5 flex-shrink-0" />
-                            )}
-                            <span className="text-muted-foreground">{feature.text}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p className={`text-sm font-medium ${
-                        type.warning ? "text-sunset" : "text-primary"
-                      }`}>
-                        {type.note}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Warning about intermediaries */}
-        <section className="py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto p-6 md:p-8 bg-amber-500/5 border border-amber-500/20 rounded-xl">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                  <AlertTriangle className="w-5 h-5 text-amber-500" />
-                </div>
-                <div>
-                  <h3 className="font-display text-xl font-semibold text-foreground mb-4">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:items-start">
+              <PriceCalculator />
+              <aside className="space-y-4 lg:sticky lg:top-24">
+                <div className="rounded-xl border border-signal/40 bg-signal/10 p-5">
+                  <p className="flex items-center gap-2 font-semibold text-foreground">
+                    <Info className="h-4 w-4 text-sunset" />
                     Важно знать
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    В Красной Поляне также работает некоторое количество посредников, которые называют себя 
-                    школами катания, но по факту таковыми не являются.
                   </p>
-                  
-                  <p className="text-sm font-medium text-foreground mb-2">Как правило:</p>
-                  <ul className="space-y-1 mb-6">
-                    <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <XCircle className="w-4 h-4 text-sunset mt-0.5 flex-shrink-0" />
-                      <span>у них нет собственной школы на курорте</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <XCircle className="w-4 h-4 text-sunset mt-0.5 flex-shrink-0" />
-                      <span>они не несут ответственность как официальная школа</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <XCircle className="w-4 h-4 text-sunset mt-0.5 flex-shrink-0" />
-                      <span>занятия проводят на базе привлечённых инструкторов или договорённостей</span>
-                    </li>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground/80">
+                    В калькуляторе цены и даты сезонов {site.pricesSeason} из прайсов школ курортов. Тарифы на сезон {site.season} обновим после их публикации и отметим дату.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-border bg-card p-5">
+                  <p className="font-semibold">Не хочется считать?</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    Оставьте заявку — назовём цену и предложим время под ваши даты.
+                  </p>
+                  <Button asChild className="mt-4 w-full rounded-lg font-semibold">
+                    <Link to={LEAD_FORM_HREF}>Подобрать инструктора</Link>
+                  </Button>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        {/* Типы инструкторов */}
+        <section className="border-y border-border bg-card py-14 md:py-20">
+          <div className="container mx-auto px-4">
+            <p className="text-sm font-semibold text-primary">Перед выбором</p>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Какие бывают инструкторы</h2>
+            <div className="mt-8 grid gap-4 lg:grid-cols-3">
+              {instructorTypes.map((type) => {
+                const tone = typeTone[type.color as keyof typeof typeTone];
+                return (
+                  <article key={type.title} className="relative flex flex-col overflow-hidden rounded-xl border border-border bg-background p-6">
+                    <span className={`absolute inset-x-0 top-0 h-1 ${tone.bar}`} />
+                    <span className={`flex h-11 w-11 items-center justify-center rounded-lg ${tone.icon}`}>
+                      <type.icon className="h-5 w-5" />
+                    </span>
+                    <h3 className="mt-4 text-lg font-bold">{type.title}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{type.description}</p>
+                    <ul className="mt-4 flex-1 space-y-2">
+                      {type.features.map((feature) => (
+                        <li key={feature.text} className="flex items-start gap-2 text-sm">
+                          {feature.positive ? (
+                            <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-pine" />
+                          ) : (
+                            <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-sunset" />
+                          )}
+                          <span className="text-foreground/85">{feature.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className={`mt-5 border-t border-border pt-4 text-sm font-medium ${tone.note}`}>{type.note}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Посредники */}
+        <section className="py-14 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl rounded-xl border border-signal/40 bg-signal/10 p-6 md:p-8">
+              <div className="flex items-start gap-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-signal text-mountain-dark">
+                  <AlertTriangle className="h-5 w-5" />
+                </span>
+                <div>
+                  <h2 className="text-xl font-bold">Важно знать: посредники</h2>
+                  <p className="mt-3 text-foreground/80">
+                    В Красной Поляне также работают посредники, которые называют себя школами катания, но по факту таковыми не являются. Как правило:
+                  </p>
+                  <ul className="mt-3 space-y-1.5">
+                    {[
+                      "у них нет собственной школы на курорте",
+                      "они не несут ответственность как официальная школа",
+                      "занятия проводят на базе привлечённых инструкторов или договорённостей",
+                    ].map((text) => (
+                      <li key={text} className="flex items-start gap-2 text-sm text-foreground/80">
+                        <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-sunset" />
+                        <span>{text}</span>
+                      </li>
+                    ))}
                   </ul>
 
-                  <div className="p-4 bg-background/50 rounded-lg border border-border/30 mb-6">
-                    <p className="text-sm text-muted-foreground">
-                      <span className="font-medium text-foreground">⚠️ Исключение составляют</span> некоторые школы из других регионов, которые:
-                    </p>
-                    <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
-                      <li>• проводят короткие групповые выездные программы</li>
-                      <li>• заранее согласовывают формат работы с курортами</li>
-                      <li>• действуют в ограниченные даты и по конкретной программе</li>
+                  <div className="mt-5 rounded-lg bg-card/80 p-4 text-sm text-foreground/80">
+                    <p><span className="font-semibold text-foreground">Исключение</span> — некоторые школы из других регионов, которые:</p>
+                    <ul className="mt-2 list-disc space-y-1 pl-5">
+                      <li>проводят короткие групповые выездные программы</li>
+                      <li>заранее согласовывают формат работы с курортами</li>
+                      <li>действуют в ограниченные даты и по конкретной программе</li>
                     </ul>
                   </div>
 
-                  <p className="text-sm font-medium text-foreground mb-2">Мы рекомендуем заранее уточнять:</p>
-                  <ul className="space-y-1">
-                    <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span>статус школы</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span>наличие допуска курорта</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span>формат ответственности за обучение</span>
-                    </li>
+                  <p className="mt-5 text-sm font-semibold">Заранее уточняйте:</p>
+                  <ul className="mt-2 grid gap-1.5 sm:grid-cols-3">
+                    {["статус школы", "наличие допуска курорта", "формат ответственности за обучение"].map((text) => (
+                      <li key={text} className="flex items-center gap-2 text-sm text-foreground/80">
+                        <CheckCircle className="h-4 w-4 shrink-0 text-pine" />
+                        <span>{text}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -269,42 +278,34 @@ const Instructors = () => {
           </div>
         </section>
 
-        {/* Resorts */}
-        <section id="schools" className="py-16 scroll-mt-24">
+        {/* Школы по курортам */}
+        <section id="schools" className="scroll-mt-24 pb-14 md:pb-20">
           <div className="container mx-auto px-4">
-            <h2 className="font-display text-3xl font-bold text-foreground mb-10">
-              Школы и инструкторы по курортам
-            </h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <p className="text-sm font-semibold text-primary">Первоисточники</p>
+            <h2 className="mt-2 text-3xl font-bold md:text-4xl">Школы и инструкторы по курортам</h2>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {resorts.map((resort) => (
-                <div 
-                  key={resort.name}
-                  className="p-4 md:p-6 bg-card rounded-xl border border-border/50"
-                >
-                  <h3 className="font-display text-lg md:text-xl font-semibold text-foreground mb-4 md:mb-6 pb-3 md:pb-4 border-b border-border/50">
-                    {resort.name}
-                  </h3>
-                  <div className="space-y-6">
-                    {resort.sections.map((section, idx) => (
-                      <div key={idx}>
-                        <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">
-                          {section.title}
-                        </h4>
-                        <ul className="space-y-2">
-                          {section.items.map((item, itemIdx) => (
-                            <li key={itemIdx}>
+                <div key={resort.name} className="rounded-xl border border-border bg-card p-5 md:p-6">
+                  <h3 className="border-b border-border pb-3 text-lg font-bold">{resort.name}</h3>
+                  <div className="mt-4 space-y-5">
+                    {resort.sections.map((section) => (
+                      <div key={section.title}>
+                        <h4 className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">{section.title}</h4>
+                        <ul className="mt-2 space-y-1.5">
+                          {section.items.map((item) => (
+                            <li key={item.name}>
                               {item.url ? (
-                                <a 
+                                <a
                                   href={item.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors group"
+                                  className="group inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline hover:underline-offset-4"
                                 >
-                                  <span className="text-sm">{item.name}</span>
-                                  <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100" />
+                                  {item.name}
+                                  <ExternalLink className="h-3.5 w-3.5 opacity-60 group-hover:opacity-100" />
                                 </a>
                               ) : (
-                                <span className="text-sm text-muted-foreground">{item.name}</span>
+                                <span className="text-sm text-muted-foreground">{item.name} — ссылка уточняется</span>
                               )}
                             </li>
                           ))}
@@ -318,70 +319,41 @@ const Instructors = () => {
           </div>
         </section>
 
-        {/* Lead form */}
-        <section className="py-16">
+        {/* Заявка */}
+        <section id="podbor" className="scroll-mt-20 bg-[image:var(--gradient-frost)] py-14 md:py-20">
           <div className="container mx-auto px-4">
-            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-              <div className="space-y-5">
-                <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-primary">
-                  Подбор без лишней траты времени
-                </div>
-                <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">
-                  Найдём инструктора под ваш уровень и дату
-                </h2>
-                <p className="text-base text-muted-foreground">
-                  Если не хочется листать десятки сайтов, отправьте короткий запрос — мы быстро определим оптимальный формат: новичок, детский урок, семейный день или индивидуальная программа.
+            <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+              <div className="lg:sticky lg:top-24">
+                <p className="text-sm font-semibold text-primary">Нужна помощь? Подберём</p>
+                <h2 className="mt-2 text-3xl font-bold md:text-4xl">Найдём инструктора под ваш уровень и даты</h2>
+                <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+                  Не нужно листать десятки сайтов: отправьте короткую заявку — определим формат и назовём цену. Новичок, ребёнок, семья или индивидуальная программа.
                 </p>
-                <ul className="space-y-3 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="mt-0.5 h-4 w-4 text-green-500" />
-                    <span>Подберём вариант по уровню, возрасту и цели поездки.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="mt-0.5 h-4 w-4 text-green-500" />
-                    <span>Покажем разницу официальной школы и аккредитованного частного инструктора.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="mt-0.5 h-4 w-4 text-green-500" />
-                    <span>Сэкономим время на выборе безопасного и понятного варианта.</span>
-                  </li>
+                <ul className="mt-6 space-y-3">
+                  {[
+                    "Подберём вариант по уровню, возрасту и цели поездки",
+                    "Объясним разницу между школой курорта и аккредитованным инструктором",
+                    "Только допущенные к работе на трассах инструкторы",
+                  ].map((text) => (
+                    <li key={text} className="flex items-start gap-3">
+                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-pine" />
+                      <span className="text-foreground/85">{text}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
-
               <InstructorLeadForm />
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-12 md:py-16 bg-card/30">
-          <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto text-center p-6 md:p-8 bg-primary/5 rounded-2xl border border-primary/20">
-              <MessageCircle className="w-10 h-10 md:w-12 md:h-12 text-primary mx-auto mb-4" />
-              <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-4">
-                Не знаете, что выбрать?
-              </h2>
-              <p className="text-sm md:text-base text-muted-foreground mb-6">
-                Уровень катания, цели, даты, дети или взрослые — всё это важно.
-                Мы поможем подобрать подходящую школу или инструктора именно под вашу задачу.
-              </p>
-              <Button variant="hero" size="lg" className="w-full sm:w-auto">
-                👉 Задать вопрос в чате
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Disclaimer */}
+        {/* Дисклеймер */}
         <section className="py-8">
-          <div className="container mx-auto px-4">
-            <div className="flex items-start gap-3 max-w-3xl mx-auto">
-              <Shield className="w-4 h-4 text-muted-foreground/60 mt-0.5 flex-shrink-0" />
-              <p className="text-xs text-muted-foreground/60">
-                Информация носит справочный характер.
-                Мы рекомендуем пользоваться услугами официальных школ и аккредитованных инструкторов курортов.
-              </p>
-            </div>
+          <div className="container mx-auto flex max-w-3xl items-start gap-3 px-4">
+            <Shield className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Информация носит справочный характер. Рекомендуем пользоваться услугами официальных школ и аккредитованных инструкторов курортов.
+            </p>
           </div>
         </section>
       </main>

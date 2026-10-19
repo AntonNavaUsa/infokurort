@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
+import { PageHero } from "@/components/layout/PageHero";
+import { site } from "@/data/site";
 import { SkiPassCalculator } from "@/components/SkiPassCalculator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,29 +13,25 @@ const SkiPasses = () => {
   const [selectedResort, setSelectedResort] = useState<Resort>('gazprom');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-glacier/5 to-background">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container mx-auto px-4 py-12">
-        {/* Hero секция */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 rounded-full mb-4">
-            <Ticket className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-600">
-              {selectedResort === 'gazprom' ? 'Ски-пассы Газпром Поляна' : 'Ски-пассы Роза Хутор'}
-            </span>
-          </div>
-          <h1 className="font-display text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 bg-clip-text text-transparent">
-            Абонементы на подъёмники
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {selectedResort === 'gazprom' 
-              ? 'Выберите подходящий ски-пасс для катания на курорте Газпром Поляна: однодневные, многодневные или сезонные абонементы. Склоны Лаура и Альпика ждут вас!'
-              : 'Выберите подходящий ски-пасс для катания на курорте Роза Хутор. Современный курорт с развитой инфраструктурой и разнообразными трассами!'
-            }
+      <main>
+        <PageHero
+          icon={Ticket}
+          eyebrow={selectedResort === 'gazprom' ? 'Ски-пассы Газпром' : 'Ски-пассы Роза Хутор'}
+          title="Ски-пассы: абонементы на подъёмники"
+          lead={selectedResort === 'gazprom'
+            ? 'Однодневные, многодневные и сезонные абонементы на склоны Лаура и Альпика. Посчитайте стоимость под свои даты.'
+            : 'Однодневные, многодневные и сезонные абонементы курорта Роза Хутор. Посчитайте стоимость под свои даты.'}
+        >
+          <p className="inline-flex items-start gap-2 rounded-lg border border-signal/40 bg-signal/10 px-4 py-3 text-sm text-foreground/85">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-sunset" />
+            Цены в калькуляторе — сезона {site.pricesSeason}. Купить ски-пасс можно на сайтах и в кассах курортов.
           </p>
-        </div>
+        </PageHero>
 
+        <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Калькулятор */}
           <div>
@@ -433,6 +431,7 @@ const SkiPasses = () => {
             </div>
           </CardContent>
         </Card>
+        </div>
       </main>
     </div>
   );

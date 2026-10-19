@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
+import { Link } from "react-router-dom";
+import { BedDouble, Map } from "lucide-react";
 import { Header } from "@/components/layout/Header";
-import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
+import { PageHero } from "@/components/layout/PageHero";
 
 export default function Hotels() {
   useEffect(() => {
@@ -59,30 +61,32 @@ export default function Hotels() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 pt-24 pb-12">
-        <div className="container mx-auto px-4">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Где жить</h1>
-            <p className="text-lg text-muted-foreground max-w-3xl">
-              Подберите идеальное жилье для вашего отдыха на курортах Красной Поляны. 
-              Отели, апартаменты и гостевые дома рядом с горнолыжными склонами.
-            </p>
-          </div>
+      <main className="min-h-screen bg-background pb-12">
+        <PageHero
+          icon={BedDouble}
+          eyebrow="Где жить"
+          title="Где жить в Красной Поляне"
+          lead="Отели, апартаменты и гостевые дома рядом с горнолыжными склонами. Поиск и бронирование — через партнёрский виджет Яндекс Путешествий."
+          updated={false}
+        >
+          <Link to="/map" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline hover:underline-offset-4">
+            <Map className="h-4 w-4" />
+            Посмотреть жильё на карте
+          </Link>
+        </PageHero>
 
+        <div className="container mx-auto px-4 pt-8">
           {/* Контейнер для виджета Яндекс.Путешествия */}
-          <div 
-            id="travelWidget" 
-            className="w-full min-h-[600px] rounded-lg border bg-background shadow-sm"
+          <div
+            id="travelWidget"
+            className="w-full min-h-[600px] overflow-hidden rounded-xl border border-border bg-card shadow-soft"
           ></div>
 
-          <div className="mt-8 text-sm text-muted-foreground">
-            <p>
-              Бронирование осуществляется через партнерскую программу Яндекс.Путешествия
-            </p>
-          </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Партнёрский виджет: бронирование через партнёрскую программу Яндекс Путешествий.
+          </p>
         </div>
-      </div>
-      <FloatingChatButton />
+      </main>
     </>
   );
 }
