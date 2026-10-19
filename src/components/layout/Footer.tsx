@@ -32,9 +32,9 @@ export function Footer() {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/45">Помощь с поездкой</p>
           <ul className="mt-4 space-y-2.5 text-sm">
             <li><Link to={LEAD_FORM_HREF} className="transition-colors hover:text-white">Подобрать инструктора</Link></li>
-            <li><Link to="/instruktory#calculator" className="transition-colors hover:text-white">Калькулятор занятий</Link></li>
-            <li><Link to="/ski-passes" className="transition-colors hover:text-white">Калькулятор ски-пасса</Link></li>
-            <li><Link to="/map" className="transition-colors hover:text-white">Карта жилья</Link></li>
+            <li><Link to="/instruktory/#calculator" className="transition-colors hover:text-white">Калькулятор занятий</Link></li>
+            <li><Link to="/ski-passes/" className="transition-colors hover:text-white">Калькулятор ски-пасса</Link></li>
+            <li><Link to="/map/" className="transition-colors hover:text-white">Карта жилья</Link></li>
           </ul>
         </div>
       </div>

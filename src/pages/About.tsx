@@ -3,6 +3,7 @@ import { ArrowRight, Ban, CalendarCheck, Info, Link2, Scale, Tag, UserCheck } fr
 import { Header } from "@/components/layout/Header";
 import { LEAD_FORM_HREF } from "@/components/layout/nav";
 import { PageHero } from "@/components/layout/PageHero";
+import { photos } from "@/data/photos";
 import { Button } from "@/components/ui/button";
 
 const principles = [
@@ -50,6 +51,7 @@ const About = () => {
         <PageHero
           icon={Info}
           eyebrow="О справочной"
+          image={photos.about}
           title="Справочная Красной Поляны"
           lead="Инфокурорт — независимый информационный сервис: три курорта в одном формате, факты и правила вместо рекламы. Справка бесплатна, а если нужна помощь с инструктором — подберём."
         />
@@ -129,6 +131,13 @@ const About = () => {
               </Link>
             </Button>
           </div>
+          <p className="mt-6 text-xs leading-relaxed text-muted-foreground">
+            Фотографии на сайте — с{" "}
+            <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground">
+              Wikimedia Commons
+            </a>
+            , обрезаны и сжаты. Автор и лицензия указаны на каждом снимке.
+          </p>
         </section>
       </main>
     </div>

@@ -1,7 +1,10 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { CalendarCheck } from "lucide-react";
+import { Photo } from "@/components/Photo";
+import type { PhotoData } from "@/data/photos";
 import { formatRuDate, site } from "@/data/site";
+import { cn } from "@/lib/utils";
 
 type PageHeroProps = {
   icon: LucideIcon;
@@ -9,14 +12,20 @@ type PageHeroProps = {
   title: ReactNode;
   lead?: ReactNode;
   updated?: string | false;
+  image?: PhotoData;
   children?: ReactNode;
 };
 
-/** Заголовок раздела в стиле табличек визит-центра: пиктограмма, метка, H1, короткий ответ. */
-export function PageHero({ icon: Icon, eyebrow, title, lead, updated = site.contentUpdated, children }: PageHeroProps) {
+/** Заголовок раздела в стиле табличек визит-центра: пиктограмма, метка, H1, короткий ответ и фото. */
+export function PageHero({ icon: Icon, eyebrow, title, lead, updated = site.contentUpdated, image, children }: PageHeroProps) {
   return (
     <section className="relative overflow-hidden border-b border-border/70 bg-[image:var(--gradient-frost)]">
-      <div className="container relative mx-auto px-4 py-12 md:py-16">
+      <div
+        className={cn(
+          "container relative mx-auto px-4 py-12 md:py-16",
+          image && "grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center",
+        )}
+      >
         <div className="max-w-3xl">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span className="inline-flex items-center gap-2.5 text-sm font-semibold text-primary">
@@ -36,6 +45,15 @@ export function PageHero({ icon: Icon, eyebrow, title, lead, updated = site.cont
           {lead && <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{lead}</p>}
           {children && <div className="mt-7">{children}</div>}
         </div>
+
+        {image && (
+          <Photo
+            photo={image}
+            priority
+            sizes="(min-width: 1024px) 560px, 100vw"
+            className="aspect-[16/10] rounded-2xl shadow-elevated ring-1 ring-black/5 lg:aspect-[4/3]"
+          />
+        )}
       </div>
     </section>
   );

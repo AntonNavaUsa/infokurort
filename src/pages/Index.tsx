@@ -110,7 +110,7 @@ const Index = () => {
                       </p>
                     </div>
                   </div>
-                  <Link to="/ski-passes">
+                  <Link to="/ski-passes/">
                     <Button size="lg" className="bg-blue-600 hover:bg-blue-700 group">
                       Открыть калькулятор
                       <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />

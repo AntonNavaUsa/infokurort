@@ -4,7 +4,7 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { InfoMark } from "./InfoMark";
-import { LEAD_FORM_HREF, navItems } from "./nav";
+import { LEAD_FORM_HREF, navItems, withTrailingSlash } from "./nav";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +12,7 @@ export function Header() {
 
   useEffect(() => setIsOpen(false), [location.pathname, location.hash]);
 
-  const isActive = (href: string) =>
-    location.pathname === href || location.pathname.startsWith(`${href}/`);
+  const isActive = (href: string) => withTrailingSlash(location.pathname).startsWith(href);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
