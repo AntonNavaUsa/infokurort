@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { LEAD_FORM_HREF } from "@/components/layout/nav";
 import { PageHero } from "@/components/layout/PageHero";
+import { photos } from "@/data/photos";
 import { Shield, AlertTriangle, Mountain, Calendar, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -51,6 +52,7 @@ const Freeride = () => {
         <PageHero
           icon={Mountain}
           eyebrow="Фрирайд"
+          image={photos.freeride}
           title="Фрирайд в Красной Поляне"
           lead="Катание за пределами подготовленных трасс — это свобода и нетронутый снег. Но только с сертифицированным гидом и лавинным снаряжением."
         />

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { PageHero } from "@/components/layout/PageHero";
+import { photos } from "@/data/photos";
 import { site } from "@/data/site";
 import { SkiPassCalculator } from "@/components/SkiPassCalculator";
+import { ClientOnly, WidgetPlaceholder } from "@/components/ClientOnly";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Ticket, Mountain, Clock, Info } from "lucide-react";
@@ -21,6 +23,7 @@ const SkiPasses = () => {
           icon={Ticket}
           eyebrow={selectedResort === 'gazprom' ? 'Ски-пассы Газпром' : 'Ски-пассы Роза Хутор'}
           title="Ски-пассы: абонементы на подъёмники"
+          image={photos.skipass}
           lead={selectedResort === 'gazprom'
             ? 'Однодневные, многодневные и сезонные абонементы на склоны Лаура и Альпика. Посчитайте стоимость под свои даты.'
             : 'Однодневные, многодневные и сезонные абонементы курорта Роза Хутор. Посчитайте стоимость под свои даты.'}
@@ -35,10 +38,12 @@ const SkiPasses = () => {
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {/* Калькулятор */}
           <div>
-            <SkiPassCalculator 
-              defaultResort={selectedResort}
-              onResortChange={setSelectedResort}
-            />
+            <ClientOnly fallback={<WidgetPlaceholder title="Калькулятор ски-пассов" minHeight={900} />}>
+              <SkiPassCalculator
+                defaultResort={selectedResort}
+                onResortChange={setSelectedResort}
+              />
+            </ClientOnly>
           </div>
 
           {/* Информация о ски-пассах */}

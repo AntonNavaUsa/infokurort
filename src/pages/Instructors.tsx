@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { LEAD_FORM_HREF } from "@/components/layout/nav";
 import { PageHero } from "@/components/layout/PageHero";
+import { photos } from "@/data/photos";
 import { PriceCalculator } from "@/components/PriceCalculator";
+import { ClientOnly, WidgetPlaceholder } from "@/components/ClientOnly";
 import { InstructorLeadForm } from "@/components/InstructorLeadForm";
 import { site } from "@/data/site";
 import {
@@ -134,6 +136,7 @@ const Instructors = () => {
         <PageHero
           icon={Users}
           eyebrow="Инструкторы и школы"
+          image={photos.instructors}
           title="Инструкторы и школы катания в Красной Поляне"
           lead="В Красной Поляне работают десятки школ и инструкторов. Собрали школы курортов и объяснили, какие бывают инструкторы и чем они отличаются, чтобы выбрать безопасно и осознанно."
         >
@@ -167,7 +170,9 @@ const Instructors = () => {
         <section id="calculator" className="scroll-mt-24 py-12 md:py-16">
           <div className="container mx-auto px-4">
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:items-start">
-              <PriceCalculator />
+              <ClientOnly fallback={<WidgetPlaceholder title="Калькулятор стоимости" />}>
+                <PriceCalculator />
+              </ClientOnly>
               <aside className="space-y-4 lg:sticky lg:top-24">
                 <div className="rounded-xl border border-signal/40 bg-signal/10 p-5">
                   <p className="flex items-center gap-2 font-semibold text-foreground">

@@ -69,7 +69,7 @@ export default function Hotels() {
           lead="Отели, апартаменты и гостевые дома рядом с горнолыжными склонами. Поиск и бронирование — через партнёрский виджет Яндекс Путешествий."
           updated={false}
         >
-          <Link to="/map" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline hover:underline-offset-4">
+          <Link to="/map/" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline hover:underline-offset-4">
             <Map className="h-4 w-4" />
             Посмотреть жильё на карте
           </Link>

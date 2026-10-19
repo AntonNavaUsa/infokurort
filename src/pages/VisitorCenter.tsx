@@ -5,7 +5,6 @@ import {
   BedDouble,
   Calculator,
   CalendarCheck,
-  Compass,
   Link2,
   Map,
   MessageCircleQuestion,
@@ -22,19 +21,21 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { LEAD_FORM_HREF } from "@/components/layout/nav";
 import { InstructorLeadForm } from "@/components/InstructorLeadForm";
+import { Photo, PhotoCredit } from "@/components/Photo";
+import { photos } from "@/data/photos";
 import { formatRuDate, site } from "@/data/site";
 
 const quickAnswers = [
   {
     question: "Как выбрать инструктора?",
     answer: "Школа курорта, аккредитованный частный инструктор или без допуска — разница в праве работать на трассах и в ответственности.",
-    href: "/instruktory",
+    href: "/instruktory/",
     keywords: "инструктор школа выбрать какой частный",
   },
   {
     question: "Сколько стоит занятие с инструктором?",
     answer: `Калькулятор считает по курорту, дате и формату. Сейчас в нём цены сезона ${site.pricesSeason}.`,
-    href: "/instruktory#calculator",
+    href: "/instruktory/#calculator",
     keywords: "цена стоимость сколько стоит инструктор занятие урок калькулятор",
   },
   {
@@ -46,37 +47,37 @@ const quickAnswers = [
   {
     question: "Как проверить аккредитацию инструктора?",
     answer: "По реестру аккредитованных инструкторов — ссылки собраны в разделе по курортам.",
-    href: "/instruktory#schools",
+    href: "/instruktory/#schools",
     keywords: "аккредитация аккредитованный проверить реестр допуск",
   },
   {
     question: "Сколько стоит ски-пасс?",
     answer: "Калькулятор абонементов для Роза Хутор и Газпром: один день, несколько дней, сезон.",
-    href: "/ski-passes",
+    href: "/ski-passes/",
     keywords: "ски-пасс скипасс ски пасс подъёмник подъемник абонемент билет цена",
   },
   {
     question: "Можно ли кататься вне трасс?",
     answer: "Только с сертифицированным гидом и лавинным снаряжением. Разобрали правила и риски.",
-    href: "/freeride",
+    href: "/freeride/",
     keywords: "фрирайд вне трасс целина гид лавина бэккантри",
   },
   {
     question: "Где остановиться в Красной Поляне?",
     answer: "Отели и апартаменты рядом со склонами — поиск через партнёрский виджет Яндекс Путешествий.",
-    href: "/hotels",
+    href: "/hotels/",
     keywords: "жильё жилье отель гостиница апартаменты где жить остановиться",
   },
   {
     question: "Жильё на карте",
     answer: "Посмотрите, что находится рядом с подъёмниками и в каком районе.",
-    href: "/map",
+    href: "/map/",
     keywords: "карта район рядом расположение где находится",
   },
   {
     question: "Кто ведёт справочную?",
     answer: "Аккредитованный инструктор и сертифицированный гид. Рассказываем, как собираем информацию.",
-    href: "/about",
+    href: "/about/",
     keywords: "кто вы о проекте справочная контакты доверие",
   },
 ];
@@ -84,37 +85,40 @@ const quickAnswers = [
 const suggestions = ["инструктор для ребёнка", "ски-пасс", "аккредитация", "вне трасс", "где жить"];
 
 const desks = [
-  { title: "Инструкторы и школы", text: "Кто имеет право учить на трассах и как выбрать", href: "/instruktory", icon: Users },
-  { title: "Калькулятор занятий", text: "Стоимость урока по курорту, дате и формату", href: "/instruktory#calculator", icon: Calculator },
-  { title: "Ски-пассы", text: "Абонементы на подъёмники и их стоимость", href: "/ski-passes", icon: Ticket },
-  { title: "Фрирайд", text: "Катание вне трасс: гиды и безопасность", href: "/freeride", icon: Mountain },
-  { title: "Где жить", text: "Отели и апартаменты рядом со склонами", href: "/hotels", icon: BedDouble },
-  { title: "Карта жилья", text: "Районы и расстояние до подъёмников", href: "/map", icon: Map },
+  { title: "Инструкторы и школы", text: "Кто имеет право учить на трассах и как выбрать", href: "/instruktory/", icon: Users },
+  { title: "Калькулятор занятий", text: "Стоимость урока по курорту, дате и формату", href: "/instruktory/#calculator", icon: Calculator },
+  { title: "Ски-пассы", text: "Абонементы на подъёмники и их стоимость", href: "/ski-passes/", icon: Ticket },
+  { title: "Фрирайд", text: "Катание вне трасс: гиды и безопасность", href: "/freeride/", icon: Mountain },
+  { title: "Где жить", text: "Отели и апартаменты рядом со склонами", href: "/hotels/", icon: BedDouble },
+  { title: "Карта жилья", text: "Районы и расстояние до подъёмников", href: "/map/", icon: Map },
 ];
 
 const resorts = [
   {
     name: "Роза Хутор",
+    photo: photos.rozaKhutor,
     note: "Школа курорта, детский клуб, аккредитованные частные инструкторы.",
     links: [
-      { label: "Школы и инструкторы", href: "/instruktory#schools" },
-      { label: "Ски-пасс", href: "/ski-passes" },
+      { label: "Школы и инструкторы", href: "/instruktory/#schools" },
+      { label: "Ски-пасс", href: "/ski-passes/" },
     ],
   },
   {
     name: "Красная Поляна",
+    photo: photos.krasnayaPolyana,
     note: "Школы «Три вершины» и Quiksilver, аккредитованные частные инструкторы.",
     links: [
-      { label: "Школы и инструкторы", href: "/instruktory#schools" },
-      { label: "Калькулятор занятий", href: "/instruktory#calculator" },
+      { label: "Школы и инструкторы", href: "/instruktory/#schools" },
+      { label: "Калькулятор занятий", href: "/instruktory/#calculator" },
     ],
   },
   {
     name: "Газпром",
+    photo: photos.gazprom,
     note: "Лаура и Альпика: школы Sammit и Riders Project, частные инструкторы.",
     links: [
-      { label: "Школы и инструкторы", href: "/instruktory#schools" },
-      { label: "Ски-пасс", href: "/ski-passes" },
+      { label: "Школы и инструкторы", href: "/instruktory/#schools" },
+      { label: "Ски-пасс", href: "/ski-passes/" },
     ],
   },
 ];
@@ -125,32 +129,6 @@ const principles = [
   { icon: CalendarCheck, title: "С датой", text: "На страницах видно, когда справку обновляли и к какому сезону относятся цены." },
   { icon: Tag, title: "Открыто", text: "Партнёрские виджеты подписаны. Заявки на инструктора обрабатываем сами." },
 ];
-
-function Ridge() {
-  return (
-    <svg
-      viewBox="0 0 1440 220"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-[120px] w-full md:h-[200px]"
-    >
-      <path
-        d="M0 150 L120 96 L190 124 L300 52 L380 104 L470 70 L560 118 L650 40 L760 112 L850 84 L960 130 L1060 60 L1150 110 L1250 78 L1340 120 L1440 90 V220 H0Z"
-        fill="hsl(212 42% 30%)"
-      />
-      <path
-        d="M300 52 L330 70 L312 74 L300 64 L290 72 L278 66Z M650 40 L684 64 L664 66 L650 56 L636 66 L620 62Z M1060 60 L1090 80 L1072 82 L1060 72 L1048 80 L1034 78Z"
-        fill="hsl(210 40% 92%)"
-        opacity="0.85"
-      />
-      <path
-        d="M0 182 L140 140 L250 168 L380 120 L520 162 L640 128 L780 170 L900 132 L1030 166 L1180 126 L1300 160 L1440 136 V220 H0Z"
-        fill="hsl(211 36% 42%)"
-      />
-      <path d="M0 206 C240 186 420 200 720 190 C1020 180 1200 198 1440 186 V220 H0Z" className="fill-background" />
-    </svg>
-  );
-}
 
 const VisitorCenter = () => {
   const [query, setQuery] = useState("");
@@ -177,11 +155,23 @@ const VisitorCenter = () => {
 
       <main>
         {/* Первый экран: ночные горы и стойка справочной */}
-        <section className="relative overflow-hidden bg-[image:var(--gradient-mountain)] text-white">
-          <div className="bg-contours absolute inset-0" />
-          <div className="pointer-events-none absolute -top-40 right-[-10%] h-[520px] w-[520px] rounded-full bg-sky-400/10 blur-3xl" />
+        <section className="relative overflow-hidden bg-mountain-dark text-white">
+          <img
+            src={photos.hero.src}
+            srcSet={photos.hero.srcSet}
+            sizes="100vw"
+            width={photos.hero.width}
+            height={photos.hero.height}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover object-[70%_center]"
+          />
+          {/* Затемнение: текст слева читается, горы справа видны */}
+          <div className="absolute inset-0 bg-gradient-to-b from-mountain-dark/90 via-mountain-dark/80 to-mountain-dark/60 lg:bg-gradient-to-r lg:from-mountain-dark lg:via-mountain-dark/85 lg:to-mountain-dark/25" />
+          <div className="bg-contours absolute inset-0 opacity-60" />
 
-          <div className="container relative mx-auto grid gap-10 px-4 pb-36 pt-12 md:pb-52 md:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div className="container relative mx-auto grid gap-10 px-4 pb-24 pt-12 md:pb-36 md:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
             <div className="max-w-xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80">
                 <span className="h-1.5 w-1.5 rounded-full bg-signal" />
@@ -202,7 +192,7 @@ const VisitorCenter = () => {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  to="/instruktory#calculator"
+                  to="/instruktory/#calculator"
                   className="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/25 px-6 font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   <Calculator className="h-4 w-4" />
@@ -278,7 +268,10 @@ const VisitorCenter = () => {
             </div>
           </div>
 
-          <Ridge />
+          <svg viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true" className="absolute inset-x-0 bottom-0 h-6 w-full md:h-10">
+            <path d="M0 40 C240 16 420 30 720 20 C1020 10 1200 28 1440 14 V40 H0Z" className="fill-background" />
+          </svg>
+          <PhotoCredit photo={photos.hero} className="absolute bottom-8 right-3 md:bottom-12 md:right-4" />
         </section>
 
         {/* Разделы как указатели визит-центра */}
@@ -320,14 +313,7 @@ const VisitorCenter = () => {
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               {resorts.map((resort) => (
                 <article key={resort.name} className="flex flex-col overflow-hidden rounded-xl border border-border bg-background">
-                  <div className="relative h-24 overflow-hidden bg-[image:var(--gradient-mountain)]">
-                    <div className="bg-contours absolute inset-0" />
-                    <svg viewBox="0 0 300 96" preserveAspectRatio="none" aria-hidden="true" className="absolute inset-x-0 bottom-0 h-16 w-full">
-                      <path d="M0 80 L60 44 L100 62 L160 20 L210 58 L250 38 L300 64 V96 H0Z" fill="hsl(211 36% 42%)" />
-                      <path d="M160 20 L176 32 L166 34 L160 28 L153 34 L145 31Z" fill="hsl(210 40% 92%)" />
-                    </svg>
-                    <Compass className="absolute right-4 top-4 h-5 w-5 text-white/40" />
-                  </div>
+                  <Photo photo={resort.photo} sizes="(min-width: 768px) 33vw, 100vw" className="aspect-[16/10]" />
                   <div className="flex flex-1 flex-col p-5">
                     <h3 className="text-xl font-bold">{resort.name}</h3>
                     <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{resort.note}</p>
@@ -387,7 +373,7 @@ const VisitorCenter = () => {
                 </div>
               ))}
             </div>
-            <Link to="/about" className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline hover:underline-offset-4">
+            <Link to="/about/" className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline hover:underline-offset-4">
               О справочной и о том, кто её ведёт
               <ArrowRight className="h-4 w-4" />
             </Link>

@@ -1,11 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { UserCheck } from "lucide-react";
-import { LEAD_FORM_HREF } from "@/components/layout/nav";
+import { LEAD_FORM_HREF, withTrailingSlash } from "@/components/layout/nav";
 
 /** Плавающая кнопка заявки на мобильных: вход в воронку с любой страницы. */
 export function FloatingLeadButton() {
   const { pathname } = useLocation();
-  if (pathname === "/map") return null;
+  if (withTrailingSlash(pathname) === "/map/") return null;
 
   return (
     <Link
