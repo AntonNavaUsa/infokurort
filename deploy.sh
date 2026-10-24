@@ -44,5 +44,8 @@ curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${backend_port
 curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${frontend_port}/" >/dev/null
 curl --fail --silent --show-error --max-time 10 "http://127.0.0.1:${admin_port}/" >/dev/null
 
+docker exec salon_web nginx -t
+docker exec salon_web nginx -s reload
+
 docker compose ps
 echo "Deployment completed at $(date -Is)"
