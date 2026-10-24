@@ -1,107 +1,31 @@
-# Ski Concierge - Admin Panel
+# Админ-панель Инфокурорта
 
-Админ-панель для управления контентом горнолыжного консьержа.
+Панель управляет справочными данными курортов, базой знаний и заявками на инструктора. Доступ защищён JWT авторизацией backend.
 
-## Технологии
+## Локальная разработка
 
-- **Refine.dev** - React framework для админок
-- **React Router** - роутинг
-- **Ant Design** - UI компоненты
-- **TypeScript**
+1. Запустить backend на `http://localhost:3001` и админку:
 
-## TODO: Установка
+   ```bash
+   cd admin
+   npm ci
+   npm run dev
+   ```
 
-```bash
-cd admin
-npm create refine-app@latest .
-```
+2. Открыть `http://localhost:3002`. Vite проксирует `/api` на backend.
 
-Выберите:
-- ✅ TypeScript
-- ✅ React Router
-- ✅ REST API
-- ✅ Ant Design
+Для другого API URL задайте `VITE_API_URL` при сборке/запуске. По умолчанию используется `/api`.
 
-## Структура (планируемая)
+## Заявки на инструктора
 
-```
-admin/
-├── src/
-│   ├── pages/
-│   │   ├── dashboard/         # Главная страница со статистикой
-│   │   ├── resorts/           # Управление курортами
-│   │   │   ├── list.tsx
-│   │   │   ├── create.tsx
-│   │   │   ├── edit.tsx
-│   │   │   └── show.tsx
-│   │   ├── knowledge/         # Управление knowledge base
-│   │   │   ├── list.tsx
-│   │   │   ├── create.tsx
-│   │   │   ├── edit.tsx
-│   │   │   └── show.tsx
-│   │   ├── chat-logs/         # Просмотр логов чата
-│   │   ├── admins/            # Управление админами
-│   │   └── settings/          # Настройки
-│   ├── components/
-│   │   ├── RichTextEditor.tsx # Markdown/Rich text editor
-│   │   ├── MetadataEditor.tsx # JSON metadata editor
-│   │   └── ResortStatusBadge.tsx
-│   ├── providers/
-│   │   ├── authProvider.ts    # JWT auth
-│   │   └── dataProvider.ts    # REST API client
-│   └── App.tsx
-└── package.json
-```
+Раздел «Заявки» показывает последние 200 запросов. Доступ к списку и смене статуса требует авторизации. Статусы: «Новая», «В работе», «Закрыта», «Спам».
 
-## Возможности
+## Курортный статус
 
-### Dashboard
-- Статистика по курортам
-- График обращений в чат
-- Последние обновления контента
-- Метрики качества RAG
+В справочнике курортов обновляйте статус, снег, погоду, подъёмники и трассы только после ручной проверки первоисточника. Backend автоматически сохраняет время обновления. Главная страница показывает эту информацию не более 24 часов; старые данные скрываются.
 
-### Управление курортами
-- CRUD операции
-- Быстрое обновление статуса
-- Bulk update
-- Фильтры и поиск
+## Production
 
-### Knowledge Base
-- Rich text editor для контента
-- Автоматическая генерация embeddings
-- Категоризация документов
-- Импорт из markdown файлов
-- Предпросмотр
+Docker образ собирается из `admin/Dockerfile`. По умолчанию запросы API идут на `https://infokurort.ru/api`; при другом домене задайте `ADMIN_API_URL` в `.env` до сборки. Контейнер публикует панель только на loopback-порту `ADMIN_PORT` (по умолчанию 3002). Для внешнего доступа администратор инфраструктуры должен настроить отдельный HTTPS virtual host в общем reverse proxy и указать его origin в `ADMIN_URL` backend. Не публикуйте админку без HTTPS и не открывайте порт контейнера в интернет.
 
-### Chat Logs
-- Просмотр истории чата
-- Фильтры по дате, session ID
-- Просмотр использованных источников
-- Метрики: время ответа, токены
-- Feedback (positive/negative)
-
-### Settings
-- API ключи
-- Настройки RAG (temperature, top_k)
-- Управление пользователями
-
-## Environment Variables
-
-```env
-VITE_API_URL=http://localhost:3001/api
-```
-
-## Этапы разработки
-
-1. ⏳ Инициализация Refine проекта
-2. ⏳ Настройка authProvider (JWT)
-3. ⏳ Настройка dataProvider (REST API)
-4. ⏳ Создание страниц CRUD
-5. ⏳ Интеграция Rich Text Editor
-6. ⏳ Dashboard с аналитикой
-7. ⏳ Deploy
-
----
-
-**Статус**: Планирование завершено, ожидает реализации
+Первый администратор создаётся командой seed только при заданных `ADMIN_EMAIL` и `ADMIN_PASSWORD` (не менее 12 символов) в окружении backend. В панели нет встроенных учётных данных по умолчанию.

@@ -14,19 +14,24 @@ cd ..
 ### 2. Настройка переменных окружения
 
 ```powershell
+# В корне репозитория задайте пароль PostgreSQL
+Copy-Item .env.example .env
 # Создайте .env файл в backend/
-cp backend\.env.example backend\.env
+Copy-Item backend\.env.example backend\.env
 ```
 
-Откройте `backend\.env` и установите ваш OpenAI API ключ:
+Задайте в корневом `.env` сильный `POSTGRES_PASSWORD`. В `backend\.env` укажите тот же пароль в `DATABASE_URL`, уникальный секрет JWT и учётную запись администратора:
 ```env
 OPENAI_API_KEY=sk-your-openai-api-key-here
+JWT_SECRET=<random secret, at least 32 characters>
+ADMIN_EMAIL=<your admin email>
+ADMIN_PASSWORD=<unique password, at least 12 characters>
 ```
 
 ### 3. Запуск PostgreSQL
 
 ```powershell
-docker-compose up postgres -d
+docker compose up postgres -d
 ```
 
 Подождите ~10 секунд, пока база данных инициализируется.
@@ -46,8 +51,8 @@ npm run db:seed
 ```
 
 Это создаст:
-- Админ аккаунт (admin@ski-concierge.ru / admin123)
-- 3 курорта (Роза Хутор, Газпром, Красная Поляна)
+- Учётную запись администратора из `ADMIN_EMAIL` / `ADMIN_PASSWORD`
+- 3 курорта без фиктивных погодных/снежных и статусных показателей
 - Knowledge base из markdown файлов
 
 ### 6. Запуск backend
@@ -74,8 +79,10 @@ curl http://localhost:3001/api/resorts
 ```powershell
 curl -X POST http://localhost:3001/api/auth/login `
   -H "Content-Type: application/json" `
-  -d '{"email":"admin@ski-concierge.ru","password":"admin123"}'
+  -d '{"email":"<ADMIN_EMAIL>","password":"<ADMIN_PASSWORD>"}'
 ```
+
+Не храните реальные значения в репозитории или истории команд.
 
 ## Структура проекта
 
@@ -89,7 +96,7 @@ your-ski-concierge/
 │   ├── prisma/
 │   │   └── schema.prisma
 │   └── package.json
-├── admin/                # ⏳ TODO: Admin panel
+├── admin/                # ✅ Админ-панель
 ├── src/                  # ✅ Frontend (существующий)
 ├── knowledge-base/       # ✅ Markdown files для RAG
 └── docker-compose.yml    # ✅ PostgreSQL + Services
@@ -97,10 +104,10 @@ your-ski-concierge/
 
 ## Следующие шаги
 
-1. ✅ Backend API готов
-2. ⏳ Создать Admin panel (Refine)
-3. ⏳ Интегрировать frontend с backend API
-4. ⏳ Deploy
+1. ✅ Backend API и таблица заявок
+2. ✅ Admin panel для курортов, базы знаний и заявок
+3. ✅ Frontend интегрирован с backend API
+4. Настроить production-секреты, домен админки и Telegram при необходимости
 
 ## Полезные команды
 

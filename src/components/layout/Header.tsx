@@ -26,7 +26,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav aria-label="Разделы справочной" className="hidden items-center gap-1 lg:flex">
+          <nav aria-label="Разделы справочной" className="hidden items-center gap-1 xl:flex">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -45,7 +45,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Button asChild className="hidden h-10 rounded-lg px-4 font-semibold sm:inline-flex">
+            <Button asChild variant="warm" className="hidden h-10 rounded-lg px-4 font-semibold sm:inline-flex">
               <Link to={LEAD_FORM_HREF}>
                 Подобрать инструктора
               </Link>
@@ -55,7 +55,7 @@ export function Header() {
               size="icon"
               aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
               aria-expanded={isOpen}
-              className="rounded-lg lg:hidden"
+              className="rounded-lg xl:hidden"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -65,7 +65,7 @@ export function Header() {
       </div>
 
       {isOpen && (
-        <nav aria-label="Разделы справочной" className="border-t border-border/70 bg-background lg:hidden">
+        <nav aria-label="Разделы справочной" className="border-t border-border/70 bg-background xl:hidden">
           <div className="container mx-auto grid gap-1 px-4 py-3">
             {navItems.map((item) => (
               <Link
@@ -83,7 +83,7 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Button asChild size="lg" className="mt-2 rounded-lg font-semibold sm:hidden">
+            <Button asChild variant="warm" size="lg" className="mt-2 rounded-lg font-semibold sm:hidden">
               <Link to={LEAD_FORM_HREF}>
                 Подобрать инструктора
                 <ArrowRight className="h-4 w-4" />

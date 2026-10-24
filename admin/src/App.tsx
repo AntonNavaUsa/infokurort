@@ -15,9 +15,10 @@ import { ResortEdit } from './pages/resorts/edit';
 import { KnowledgeList } from './pages/knowledge/list';
 import { KnowledgeCreate } from './pages/knowledge/create';
 import { KnowledgeEdit } from './pages/knowledge/edit';
+import { InstructorRequestsList } from './pages/instructor-requests/list';
 import { Login } from './pages/login';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 const TOKEN_KEY = 'ski-admin-token';
 
 // Create axios instance with auth interceptor
@@ -59,6 +60,13 @@ function App() {
                   label: 'База знаний',
                 },
               },
+              {
+                name: 'instructor-requests',
+                list: '/instructor-requests',
+                meta: {
+                  label: 'Заявки',
+                },
+              },
             ]}
             options={{
               syncWithLocation: true,
@@ -69,7 +77,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route
                 element={
-                  <Authenticated fallback={<Navigate to="/login" />}>
+                  <Authenticated key="authenticated" fallback={<Navigate to="/login" />}>
                     <ThemedLayoutV2>
                       <Outlet />
                     </ThemedLayoutV2>
@@ -87,6 +95,7 @@ function App() {
                   <Route path="create" element={<KnowledgeCreate />} />
                   <Route path="edit/:id" element={<KnowledgeEdit />} />
                 </Route>
+                <Route path="/instructor-requests" element={<InstructorRequestsList />} />
               </Route>
             </Routes>
           </Refine>

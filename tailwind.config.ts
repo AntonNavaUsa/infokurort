@@ -95,6 +95,11 @@ export default {
   			frost: 'hsl(var(--frost))',
   			pine: 'hsl(var(--pine))',
   			signal: 'hsl(var(--signal))',
+			warm: {
+				DEFAULT: 'hsl(var(--warm))',
+				foreground: 'hsl(var(--warm-foreground))',
+				soft: 'hsl(var(--warm-soft))'
+			},
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',

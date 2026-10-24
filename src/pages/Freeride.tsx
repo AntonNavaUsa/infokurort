@@ -165,7 +165,7 @@ const Freeride = () => {
                   Оставьте заявку — уточним опыт, даты и формат и подберём сертифицированного специалиста.
                 </p>
               </div>
-              <Button asChild size="lg" className="h-12 shrink-0 rounded-lg px-6 font-semibold">
+              <Button asChild variant="warm" size="lg" className="h-12 shrink-0 rounded-lg px-6 font-semibold">
                 <Link to={LEAD_FORM_HREF}>Оставить заявку</Link>
               </Button>
             </div>

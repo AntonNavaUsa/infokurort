@@ -64,7 +64,7 @@
 1. **Создайте базу данных**:
    ```sql
    CREATE DATABASE ski_concierge;
-   CREATE USER ski_user WITH PASSWORD 'ski_password';
+   CREATE USER ski_user WITH PASSWORD '<unique-long-password>';
    GRANT ALL PRIVILEGES ON DATABASE ski_concierge TO ski_user;
    ```
 
@@ -120,16 +120,13 @@ curl http://localhost:3001/api/resorts
 ```powershell
 curl -X POST http://localhost:3001/api/auth/login `
   -H "Content-Type: application/json" `
-  -d '{\"email\":\"admin@ski-concierge.ru\",\"password\":\"admin123\"}'
+  -d '{\"email\":\"<ADMIN_EMAIL>\",\"password\":\"<ADMIN_PASSWORD>\"}'
 ```
 
 ## Что дальше?
 
-1. **Admin Panel** - создать Refine admin panel
-2. **Frontend Integration** - подключить существующий фронтенд к API
-3. **Testing** - протестировать RAG функциональность
-4. **Deploy** - деплой на production
+Админ-панель и интерфейс заявок реализованы в `admin/`. Seed требует `ADMIN_EMAIL` и `ADMIN_PASSWORD` (не менее 12 символов), JWT — случайный `JWT_SECRET` длиной от 32 символов. Настройте значения локально, не добавляя файл окружения в git.
 
 ---
 
-📝 **Важно**: Не забудьте добавить ваш OpenAI API ключ в `backend/.env`!
+Не включайте тестовые персональные данные или заранее известные пароли в production.

@@ -4,20 +4,24 @@ import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { AppLayout, type PageComponents } from "./AppLayout";
 import Instructors from "./pages/Instructors";
+import InstructorTopics from "./pages/InstructorTopics";
 import SkiPasses from "./pages/SkiPasses";
 import Freeride from "./pages/Freeride";
 import About from "./pages/About";
 import Hotels from "./pages/Hotels";
 import NotFound from "./pages/NotFound";
+import ReferenceGuides from "./pages/ReferenceGuides";
 
 const pages: PageComponents = {
   Instructors,
+  InstructorTopics,
   SkiPasses,
   Freeride,
   About,
   // Карта (Leaflet) работает только в браузере: маршрут не пререндерится, отдаётся пустая оболочка
   AccommodationMap: () => null,
   Hotels,
+  ReferenceGuides,
   NotFound,
 };
 

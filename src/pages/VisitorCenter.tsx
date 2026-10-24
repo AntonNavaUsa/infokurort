@@ -3,6 +3,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   BedDouble,
+  BusFront,
   Calculator,
   CalendarCheck,
   Link2,
@@ -21,6 +22,7 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { LEAD_FORM_HREF } from "@/components/layout/nav";
 import { InstructorLeadForm } from "@/components/InstructorLeadForm";
+import { ResortStatusPanel } from "@/components/ResortStatusPanel";
 import { Photo, PhotoCredit } from "@/components/Photo";
 import { photos } from "@/data/photos";
 import { formatRuDate, site } from "@/data/site";
@@ -43,6 +45,30 @@ const quickAnswers = [
     answer: "Подберём занятие под возраст и уровень — оставьте короткую заявку.",
     href: LEAD_FORM_HREF,
     keywords: "ребёнок ребенок дети детский сын дочь семья",
+  },
+  {
+    question: "Как добраться до курорта?",
+    answer: "Проверьте расписание и маршрут непосредственно перед поездкой у перевозчика и аэропорта.",
+    href: "/transport/",
+    keywords: "дорога как добраться транспорт поезд автобус аэропорт такси трасса",
+  },
+  {
+    question: "Где парковаться?",
+    answer: "Тариф и доступность мест меняются — перед выездом проверьте условия на официальном сайте курорта.",
+    href: "/parking/",
+    keywords: "парковка парковаться автомобиль машина стоянка",
+  },
+  {
+    question: "Что делать в экстренной ситуации?",
+    answer: "При непосредственной угрозе жизни звоните 112 и выполняйте инструкции диспетчера.",
+    href: "/help/",
+    keywords: "помощь безопасность спасатели травма экстренная ситуация 112",
+  },
+  {
+    question: "Что взять в прокат?",
+    answer: "Расскажем, какие параметры назвать и что проверить перед выходом на склон.",
+    href: "/rental/",
+    keywords: "прокат лыжи сноуборд ботинки шлем аренда",
   },
   {
     question: "Как проверить аккредитацию инструктора?",
@@ -85,10 +111,14 @@ const quickAnswers = [
 const suggestions = ["инструктор для ребёнка", "ски-пасс", "аккредитация", "вне трасс", "где жить"];
 
 const desks = [
+  { title: "Курорты", text: "Справка и ссылки на первоисточники", href: "/kurorty/", icon: Mountain },
   { title: "Инструкторы и школы", text: "Кто имеет право учить на трассах и как выбрать", href: "/instruktory/", icon: Users },
   { title: "Калькулятор занятий", text: "Стоимость урока по курорту, дате и формату", href: "/instruktory/#calculator", icon: Calculator },
   { title: "Ски-пассы", text: "Абонементы на подъёмники и их стоимость", href: "/ski-passes/", icon: Ticket },
   { title: "Фрирайд", text: "Катание вне трасс: гиды и безопасность", href: "/freeride/", icon: Mountain },
+  { title: "Как добраться", text: "Проверьте расписание и спланируйте дорогу", href: "/transport/", icon: BusFront },
+  { title: "Парковка", text: "Что уточнить перед поездкой на автомобиле", href: "/parking/", icon: Map },
+  { title: "Помощь и безопасность", text: "Памятка и номер экстренных служб", href: "/help/", icon: ShieldCheck },
   { title: "Где жить", text: "Отели и апартаменты рядом со склонами", href: "/hotels/", icon: BedDouble },
   { title: "Карта жилья", text: "Районы и расстояние до подъёмников", href: "/map/", icon: Map },
 ];
@@ -99,6 +129,7 @@ const resorts = [
     photo: photos.rozaKhutor,
     note: "Школа курорта, детский клуб, аккредитованные частные инструкторы.",
     links: [
+      { label: "Справка о курорте", href: "/kurorty/roza-hutor/" },
       { label: "Школы и инструкторы", href: "/instruktory/#schools" },
       { label: "Ски-пасс", href: "/ski-passes/" },
     ],
@@ -108,6 +139,7 @@ const resorts = [
     photo: photos.krasnayaPolyana,
     note: "Школы «Три вершины» и Quiksilver, аккредитованные частные инструкторы.",
     links: [
+      { label: "Справка о курорте", href: "/kurorty/krasnaya-polyana/" },
       { label: "Школы и инструкторы", href: "/instruktory/#schools" },
       { label: "Калькулятор занятий", href: "/instruktory/#calculator" },
     ],
@@ -117,6 +149,7 @@ const resorts = [
     photo: photos.gazprom,
     note: "Лаура и Альпика: школы Sammit и Riders Project, частные инструкторы.",
     links: [
+      { label: "Справка о курорте", href: "/kurorty/gazprom/" },
       { label: "Школы и инструкторы", href: "/instruktory/#schools" },
       { label: "Ски-пасс", href: "/ski-passes/" },
     ],
@@ -169,13 +202,16 @@ const VisitorCenter = () => {
           />
           {/* Затемнение: текст слева читается, горы справа видны */}
           <div className="absolute inset-0 bg-gradient-to-b from-mountain-dark/90 via-mountain-dark/80 to-mountain-dark/60 lg:bg-gradient-to-r lg:from-mountain-dark lg:via-mountain-dark/85 lg:to-mountain-dark/25" />
+          {/* Альпийская заря: тёплое свечение рассвета над вершинами */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_85%_0%,hsl(24_95%_62%/0.38),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_100%_100%,hsl(340_70%_60%/0.18),transparent_70%)]" />
           <div className="bg-contours absolute inset-0 opacity-60" />
 
           <div className="container relative mx-auto grid gap-10 px-4 pb-24 pt-12 md:pb-36 md:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
             <div className="max-w-xl">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium text-white/80">
-                <span className="h-1.5 w-1.5 rounded-full bg-signal" />
-                Готовим справку к сезону {site.season}
+                <span className="h-1.5 w-1.5 rounded-full bg-signal shadow-[0_0_8px_hsl(var(--signal))]" />
+                Добро пожаловать в горы · сезон {site.season}
               </span>
               <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight md:text-6xl">
                 Справочная Красной&nbsp;Поляны
@@ -186,7 +222,7 @@ const VisitorCenter = () => {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to={LEAD_FORM_HREF}
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-white px-6 font-semibold text-mountain-dark transition-colors hover:bg-white/90"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-warm px-6 font-semibold text-warm-foreground shadow-lg shadow-black/20 transition-colors hover:bg-warm/90"
                 >
                   Подобрать инструктора
                   <ArrowRight className="h-4 w-4" />
@@ -278,7 +314,7 @@ const VisitorCenter = () => {
         <section className="container mx-auto px-4 py-14 md:py-20">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-semibold text-primary">Разделы справочной</p>
+              <p className="text-sm font-semibold text-warm">Разделы справочной</p>
               <h2 className="mt-2 text-3xl font-bold md:text-4xl">Куда пройти</h2>
             </div>
             <p className="max-w-md text-muted-foreground">Каждый раздел начинается с короткого ответа, дальше — подробности и ссылки на первоисточники.</p>
@@ -304,10 +340,12 @@ const VisitorCenter = () => {
           </div>
         </section>
 
+        <ResortStatusPanel />
+
         {/* Курорты в одинаковом формате */}
         <section className="border-y border-border bg-card">
           <div className="container mx-auto px-4 py-14 md:py-20">
-            <p className="text-sm font-semibold text-primary">Три курорта — одна долина</p>
+            <p className="text-sm font-semibold text-warm">Три курорта — одна долина</p>
             <h2 className="mt-2 text-3xl font-bold md:text-4xl">Курорты</h2>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -336,7 +374,7 @@ const VisitorCenter = () => {
         <section className="container mx-auto px-4 py-14 md:py-20">
           <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div className="lg:sticky lg:top-24">
-              <p className="text-sm font-semibold text-primary">Нужна помощь? Подберём</p>
+              <p className="text-sm font-semibold text-warm">Нужна помощь? Подберём</p>
               <h2 className="mt-2 text-3xl font-bold md:text-4xl">Инструктор за&nbsp;2&nbsp;минуты</h2>
               <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
                 Ответьте на несколько вопросов — свяжемся, предложим время и назовём цену занятия.

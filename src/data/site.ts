@@ -5,7 +5,7 @@ export const site = {
   tagline: "Справочная Красной Поляны",
   season: "2026/27",
   pricesSeason: "2025/26",
-  contentUpdated: "2026-10-19",
+  contentUpdated: "2026-10-24",
 } as const;
 
 export const formatRuDate = (isoDate: string) =>

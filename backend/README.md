@@ -129,13 +129,16 @@ backend/
 └── package.json
 ```
 
-## Default Credentials
+## Initial administrator
 
-После seed:
-- **Email**: admin@ski-concierge.ru
-- **Password**: admin123
+The seed command requires explicit `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables. Passwords must be at least 12 characters. No default admin credentials are created or logged.
 
-⚠️ **Измените эти данные в продакшене!**
+## Instructor requests and notifications
+
+- `GET /api/instructor-requests` and `PATCH /api/instructor-requests/:id` require an administrator JWT.
+- Public submissions are saved to PostgreSQL before the API responds.
+- Optional Telegram notifications require both `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`; notification failures are logged and do not discard a saved request.
+- Copy `backend/.env.example` to `backend/.env.production` and provide a random `JWT_SECRET` of at least 32 characters.
 
 ## Environment Variables
 

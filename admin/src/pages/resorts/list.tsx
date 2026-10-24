@@ -22,6 +22,11 @@ export const ResortList = () => {
         <Table.Column dataIndex="snowDepth" title="Снег (см)" />
         <Table.Column dataIndex="temperature" title="Температура (°C)" />
         <Table.Column
+          dataIndex="statusUpdatedAt"
+          title="Статус проверен"
+          render={(value) => value ? new Date(value).toLocaleString('ru-RU') : 'Не проверен'}
+        />
+        <Table.Column
           dataIndex="liftsOpen"
           title="Подъемники"
           render={(value, record: any) => `${value}/${record.liftsTotal}`}

@@ -35,6 +35,11 @@ export function Footer() {
             <li><Link to="/instruktory/#calculator" className="transition-colors hover:text-white">Калькулятор занятий</Link></li>
             <li><Link to="/ski-passes/" className="transition-colors hover:text-white">Калькулятор ски-пасса</Link></li>
             <li><Link to="/map/" className="transition-colors hover:text-white">Карта жилья</Link></li>
+            <li><Link to="/transport/" className="transition-colors hover:text-white">Как добраться</Link></li>
+            <li><Link to="/parking/" className="transition-colors hover:text-white">Парковки</Link></li>
+            <li><Link to="/rental/" className="transition-colors hover:text-white">Прокат снаряжения</Link></li>
+            <li><Link to="/help/" className="transition-colors hover:text-white">Безопасность и помощь</Link></li>
+            <li><Link to="/partners/" className="transition-colors hover:text-white">Партнёрам</Link></li>
           </ul>
         </div>
       </div>

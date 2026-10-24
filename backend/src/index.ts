@@ -18,6 +18,11 @@ import instructorRequestsRoutes from './routes/instructorRequests.js';
 
 dotenv.config();
 
+const jwtSecret = process.env.JWT_SECRET;
+if (!jwtSecret || jwtSecret.length < 32) {
+  throw new Error('JWT_SECRET must be configured and contain at least 32 characters');
+}
+
 const prisma = new PrismaClient();
 
 const fastify = Fastify({
@@ -51,7 +56,7 @@ await fastify.register(cors, {
 
 // JWT
 await fastify.register(jwt, {
-  secret: process.env.JWT_SECRET || 'your-super-secret-jwt-key',
+  secret: jwtSecret,
 });
 
 // Attach Prisma to fastify instance

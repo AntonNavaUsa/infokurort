@@ -242,7 +242,7 @@ export function InstructorLeadForm({ title = "Подобрать инструк�
         <p className="text-xs leading-relaxed text-muted-foreground sm:max-w-xs">
           {footnote ?? "Нажимая «Отправить», вы соглашаетесь на обработку контактных данных для ответа на заявку."}
         </p>
-        <Button type="submit" size="lg" className="h-12 w-full rounded-lg px-6 font-semibold sm:w-auto" disabled={isSubmitting}>
+        <Button type="submit" variant="warm" size="lg" className="h-12 w-full rounded-lg px-6 font-semibold sm:w-auto" disabled={isSubmitting}>
           {isSubmitting ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />

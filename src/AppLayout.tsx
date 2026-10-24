@@ -6,12 +6,13 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import seoPages from "./data/seoPages.json";
 import VisitorCenter from "./pages/VisitorCenter";
+import ReferenceGuides from "./pages/ReferenceGuides";
 import { Footer } from "./components/layout/Footer";
 import { FloatingLeadButton } from "./components/FloatingLeadButton";
 import { withTrailingSlash } from "./components/layout/nav";
 
 export type PageComponents = Record<
-  "Instructors" | "SkiPasses" | "Freeride" | "About" | "AccommodationMap" | "Hotels" | "NotFound",
+  "Instructors" | "InstructorTopics" | "SkiPasses" | "Freeride" | "About" | "AccommodationMap" | "Hotels" | "ReferenceGuides" | "NotFound",
   ComponentType
 >;
 
@@ -90,7 +91,7 @@ const PageFallback = () => <div className="min-h-[60vh]" aria-busy="true" />;
  */
 export function AppLayout({ pages, children }: { pages: PageComponents; children?: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
-  const { Instructors, SkiPasses, Freeride, About, AccommodationMap, Hotels, NotFound } = pages;
+  const { Instructors, InstructorTopics, SkiPasses, Freeride, About, AccommodationMap, Hotels, ReferenceGuides, NotFound } = pages;
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -103,9 +104,25 @@ export function AppLayout({ pages, children }: { pages: PageComponents; children
           <Routes>
             <Route path="/" element={<VisitorCenter />} />
             <Route path="/instruktory" element={<Instructors />} />
+            <Route path="/instruktory/roza-hutor" element={<InstructorTopics />} />
+            <Route path="/instruktory/krasnaya-polyana" element={<InstructorTopics />} />
+            <Route path="/instruktory/gazprom" element={<InstructorTopics />} />
+            <Route path="/instruktory/individualnye-zanyatiya" element={<InstructorTopics />} />
+            <Route path="/instruktory/gruppovye-zanyatiya" element={<InstructorTopics />} />
+            <Route path="/instruktory/dlya-rebenka" element={<InstructorTopics />} />
+            <Route path="/instruktory/bronirovanie" element={<InstructorTopics />} />
             <Route path="/ski-passes" element={<SkiPasses />} />
             <Route path="/freeride" element={<Freeride />} />
             <Route path="/hotels" element={<Hotels />} />
+            <Route path="/kurorty" element={<ReferenceGuides />} />
+            <Route path="/kurorty/roza-hutor" element={<ReferenceGuides />} />
+            <Route path="/kurorty/krasnaya-polyana" element={<ReferenceGuides />} />
+            <Route path="/kurorty/gazprom" element={<ReferenceGuides />} />
+            <Route path="/transport" element={<ReferenceGuides />} />
+            <Route path="/parking" element={<ReferenceGuides />} />
+            <Route path="/rental" element={<ReferenceGuides />} />
+            <Route path="/help" element={<ReferenceGuides />} />
+            <Route path="/partners" element={<ReferenceGuides />} />
             <Route path="/about" element={<About />} />
             <Route path="/map" element={<AccommodationMap />} />
             <Route path="*" element={<NotFound />} />

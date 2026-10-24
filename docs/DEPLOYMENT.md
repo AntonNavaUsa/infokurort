@@ -103,8 +103,10 @@ POSTGRES_PASSWORD=YOUR_SECURE_DB_PASSWORD_HERE  # Смените на сильн
 POSTGRES_DB=ski_concierge
 POSTGRES_PORT=5432
 
-# Backend Configuration
+# Backend and admin configuration
 BACKEND_PORT=3001
+ADMIN_PORT=3002
+ADMIN_API_URL=https://infokurort.ru/api
 
 # Frontend Configuration  
 FRONTEND_PORT=80
@@ -113,7 +115,7 @@ FRONTEND_PORT=80
 ### 2. Настройка backend/.env.production
 
 ```bash
-cp backend/.env.production backend/.env.production.bak
+cp backend/.env.example backend/.env.production
 nano backend/.env.production
 ```
 
@@ -133,8 +135,17 @@ OPENAI_API_KEY=sk-your-real-openai-api-key-here
 # JWT Secret (генерируйте командой: openssl rand -base64 32)
 JWT_SECRET=YOUR_RANDOM_SECRET_HERE
 
+# Учётная запись для первичного запуска seed (пароль не менее 12 символов)
+ADMIN_EMAIL=your-admin-email
+ADMIN_PASSWORD=YOUR_UNIQUE_LONG_PASSWORD
+
+# Необязательные уведомления о заявках
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+
 # CORS Origins
-CORS_ORIGINS=http://infokurort.ru,https://infokurort.ru
+FRONTEND_URL=https://infokurort.ru
+ADMIN_URL=https://admin.infokurort.ru
 ```
 
 **Генерация JWT секрета:**
@@ -201,8 +212,8 @@ docker compose exec backend npm run prisma:migrate
 docker compose exec backend npm run db:seed
 ```
 
-Это создаст:
-- Админ аккаунт: `admin@ski-concierge.ru` / `admin123`
+Перед запуском задайте `ADMIN_EMAIL` и `ADMIN_PASSWORD` в `backend/.env.production`. Seed не создаёт заранее известную учётную запись.
+- Создаёт заданную вами учётную запись администратора
 - 3 курорта (Роза Хутор, Газпром, Красная Поляна)
 - Базу знаний из markdown файлов
 
@@ -241,7 +252,7 @@ cd /var/www/infokurort
 ./deploy.sh
 ```
 
-Скрипт использует уже размещённую в `/var/www/infokurort` версию проекта. Он проверяет конфигурацию, собирает только образы `backend` и `infokurort`, применяет миграции и обновляет только эти два сервиса. Он не выполняет `git pull`, не останавливает PostgreSQL, не управляет системным Nginx или Certbot и не удаляет сертификаты или Docker volumes.
+Скрипт использует уже размещённую в `/var/www/infokurort` версию проекта. Он проверяет конфигурацию, собирает образы `backend`, `infokurort` и `admin`, применяет миграции и обновляет только эти три сервиса. Он не выполняет `git pull`, не останавливает PostgreSQL, не управляет системным Nginx или Certbot и не удаляет сертификаты или Docker volumes. Админ-контейнер привязан к loopback; внешний HTTPS virtual host требует отдельной настройки в общем reverse proxy и не входит в автоматический deploy. Значение `ADMIN_URL` должно совпадать с origin этого virtual host; пример `admin.infokurort.ru` требует, чтобы DNS и сертификат уже поддерживали это имя.
 
 На общем сервере не используйте для деплоя `docker compose down`, `docker compose down -v` или глобальные команды очистки Docker. Для HTTPS и сертификатов следуйте отдельной процедуре обслуживания общего proxy; не удаляйте и не пересоздавайте каталог сертификатов и не меняйте конфигурации других проектов.
 
@@ -265,7 +276,7 @@ docker compose restart
 docker compose restart backend
 
 # Пересборка и перезапуск только приложения (без базы данных)
-docker compose up -d --build --no-deps backend infokurort
+docker compose up -d --build --no-deps backend infokurort admin
 
 # Вход в контейнер
 docker compose exec backend sh
@@ -405,8 +416,10 @@ curl http://infokurort.ru/api/resorts
 # Авторизация
 curl -X POST http://infokurort.ru/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@ski-concierge.ru","password":"admin123"}'
+  -d '{"email":"<ADMIN_EMAIL>","password":"<ADMIN_PASSWORD>"}'
 ```
+
+Подставьте значения из защищённого хранилища/настроек `backend/.env.production`. В репозитории нет стандартных учётных данных.
 
 ### 3. Проверка AI чата
 

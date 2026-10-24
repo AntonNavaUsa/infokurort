@@ -4,11 +4,13 @@ import { AppLayout, type PageComponents } from "./AppLayout";
 
 const pages: PageComponents = {
   Instructors: lazy(() => import("./pages/Instructors")),
+  InstructorTopics: lazy(() => import("./pages/InstructorTopics")),
   SkiPasses: lazy(() => import("./pages/SkiPasses")),
   Freeride: lazy(() => import("./pages/Freeride")),
   About: lazy(() => import("./pages/About")),
   AccommodationMap: lazy(() => import("./pages/AccommodationMap")),
   Hotels: lazy(() => import("./pages/Hotels")),
+  ReferenceGuides: lazy(() => import("./pages/ReferenceGuides")),
   NotFound: lazy(() => import("./pages/NotFound")),
 };
 

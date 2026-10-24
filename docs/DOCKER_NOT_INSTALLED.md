@@ -70,7 +70,7 @@
 1. **Создайте базу данных:**
    ```sql
    CREATE DATABASE ski_concierge;
-   CREATE USER ski_user WITH PASSWORD 'ski_password';
+   CREATE USER ski_user WITH PASSWORD '<unique-long-password>';
    GRANT ALL PRIVILEGES ON DATABASE ski_concierge TO ski_user;
    \c ski_concierge
    CREATE EXTENSION IF NOT EXISTS vector;

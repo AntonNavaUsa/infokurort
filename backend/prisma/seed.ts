@@ -9,14 +9,20 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting database seed...');
 
-  // 1. Create default admin user
-  const passwordHash = await bcrypt.hash('admin123', 10);
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword || adminPassword.length < 12) {
+    throw new Error('Set ADMIN_EMAIL and ADMIN_PASSWORD (at least 12 characters) before running the seed');
+  }
+
+  // Create the initial admin only from explicit deployment credentials.
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
   
   const admin = await prisma.admin.upsert({
-    where: { email: 'admin@ski-concierge.ru' },
+    where: { email: adminEmail },
     update: {},
     create: {
-      email: 'admin@ski-concierge.ru',
+      email: adminEmail,
       passwordHash,
       name: 'Super Admin',
       role: 'super_admin',
@@ -31,14 +37,14 @@ async function main() {
       name: 'Роза Хутор',
       slug: 'roza-hutor',
       location: 'Красная Поляна, Сочи',
-      status: 'open',
-      snowDepth: 180,
-      weather: 'Солнечно',
-      temperature: -5,
-      liftsOpen: 28,
-      liftsTotal: 32,
-      trailsOpen: 75,
-      trailsTotal: 102,
+      status: null,
+      snowDepth: null,
+      weather: null,
+      temperature: null,
+      liftsOpen: null,
+      liftsTotal: null,
+      trailsOpen: null,
+      trailsTotal: null,
       website: 'https://rosaski.com',
       description: 'Крупнейший горнолыжный курорт России с современной инфраструктурой',
     },
@@ -46,14 +52,14 @@ async function main() {
       name: 'Газпром',
       slug: 'gazprom',
       location: 'Красная Поляна, Сочи',
-      status: 'open',
-      snowDepth: 165,
-      weather: 'Переменная облачность',
-      temperature: -3,
-      liftsOpen: 24,
-      liftsTotal: 28,
-      trailsOpen: 68,
-      trailsTotal: 85,
+      status: null,
+      snowDepth: null,
+      weather: null,
+      temperature: null,
+      liftsOpen: null,
+      liftsTotal: null,
+      trailsOpen: null,
+      trailsTotal: null,
       website: 'https://lk-gazprom.ru',
       description: 'Современный горнолыжный комплекс с разнообразными трассами',
     },
@@ -61,14 +67,14 @@ async function main() {
       name: 'Красная Поляна',
       slug: 'krasnaya-polyana',
       location: 'Красная Поляна, Сочи',
-      status: 'open',
-      snowDepth: 155,
-      weather: 'Легкий снегопад',
-      temperature: -4,
-      liftsOpen: 18,
-      liftsTotal: 22,
-      trailsOpen: 52,
-      trailsTotal: 67,
+      status: null,
+      snowDepth: null,
+      weather: null,
+      temperature: null,
+      liftsOpen: null,
+      liftsTotal: null,
+      trailsOpen: null,
+      trailsTotal: null,
       website: 'https://krasnayapolyana.com',
       description: 'Курорт с уникальным расположением и живописными видами',
     },
@@ -125,9 +131,7 @@ async function main() {
   }
 
   console.log('🎉 Seed completed successfully!');
-  console.log('\n📝 Login credentials:');
-  console.log('  Email: admin@ski-concierge.ru');
-  console.log('  Password: admin123');
+  console.log(`\n📝 Initial admin configured for ${admin.email}`);
 }
 
 main()

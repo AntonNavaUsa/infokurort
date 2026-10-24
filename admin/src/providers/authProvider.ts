@@ -1,7 +1,7 @@
 import type { AuthProvider } from '@refinedev/core';
 
 const TOKEN_KEY = 'ski-admin-token';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {

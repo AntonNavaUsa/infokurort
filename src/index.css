@@ -6,56 +6,61 @@
 
 @layer base {
   :root {
-    /* Visitor center palette: snow background, information blue, night-mountain ink */
-    --background: 210 33% 98%;
-    --foreground: 214 45% 13%;
+    /* Visitor center palette: warm cream background, information blue for signage,
+       terracotta for "help" actions, night-mountain ink */
+    --background: 36 33% 97%;
+    --foreground: 218 32% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 214 45% 13%;
+    --card-foreground: 218 32% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 214 45% 13%;
+    --popover-foreground: 218 32% 15%;
 
     /* Information blue (wayfinding "i") */
     --primary: 211 88% 36%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 211 60% 95%;
-    --secondary-foreground: 211 70% 25%;
+    --secondary: 34 48% 92%;
+    --secondary-foreground: 20 45% 26%;
 
-    --muted: 210 30% 95%;
-    --muted-foreground: 214 14% 40%;
+    --muted: 36 28% 93%;
+    --muted-foreground: 25 10% 38%;
 
-    --accent: 210 40% 95%;
-    --accent-foreground: 214 45% 13%;
+    --accent: 36 35% 94%;
+    --accent-foreground: 218 32% 15%;
 
     --destructive: 4 74% 47%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 213 27% 88%;
-    --input: 213 24% 82%;
+    --border: 32 22% 86%;
+    --input: 30 18% 79%;
     --ring: 211 88% 36%;
 
     --radius: 0.75rem;
 
     /* Custom alpine tokens */
-    --mountain-dark: 214 58% 13%;
+    --mountain-dark: 218 42% 13%;
     --mountain-medium: 213 45% 26%;
     --snow-white: 210 40% 99%;
     --glacier-blue: 196 80% 36%;
     --sunset-warm: 24 88% 46%;
-    --frost: 210 40% 96%;
+    --frost: 36 40% 95%;
+    /* Terracotta: кнопки заявки и надзаголовки; белый текст 4.8:1 */
+    --warm: 16 76% 44%;
+    --warm-foreground: 0 0% 100%;
+    --warm-soft: 22 80% 94%;
     --pine: 158 55% 28%;
     --signal: 42 95% 52%;
 
     /* Gradients */
-    --gradient-mountain: linear-gradient(180deg, hsl(214 58% 13%) 0%, hsl(212 55% 22%) 100%);
+    --gradient-mountain: linear-gradient(180deg, hsl(218 42% 13%) 0%, hsl(214 45% 22%) 100%);
     --gradient-sky: linear-gradient(180deg, hsl(205 70% 55%) 0%, hsl(211 88% 36%) 100%);
-    --gradient-frost: linear-gradient(180deg, hsl(210 45% 95%) 0%, hsl(210 33% 98%) 100%);
+    --gradient-frost: linear-gradient(180deg, hsl(32 60% 93%) 0%, hsl(36 33% 97%) 100%);
 
     /* Shadows */
-    --shadow-soft: 0 1px 2px hsl(214 45% 13% / 0.04), 0 8px 24px -12px hsl(214 45% 13% / 0.12);
-    --shadow-elevated: 0 2px 4px hsl(214 45% 13% / 0.04), 0 24px 48px -20px hsl(214 45% 13% / 0.25);
+    --shadow-soft: 0 1px 2px hsl(25 30% 20% / 0.05), 0 8px 24px -12px hsl(25 30% 20% / 0.14);
+    --shadow-elevated: 0 2px 4px hsl(25 30% 20% / 0.05), 0 24px 48px -20px hsl(218 40% 15% / 0.28);
     --shadow-glow: 0 0 0 4px hsl(211 88% 36% / 0.15);
 
     /* Sidebar defaults */

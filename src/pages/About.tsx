@@ -60,8 +60,8 @@ const About = () => {
         <section className="container mx-auto px-4 py-14 md:py-16">
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
-              <p className="text-sm font-semibold text-primary">Кто ведёт справочную</p>
-              <h2 className="mt-2 text-3xl font-bold">Инструктор и гид, который работает в долине</h2>
+              <p className="text-sm font-semibold text-warm">Кто ведёт справочную</p>
+              <h2 className="mt-2 text-3xl font-bold">Справка о курортах и занятиях</h2>
             </div>
             <div className="rounded-xl border border-border bg-card p-6">
               <div className="flex items-start gap-4">
@@ -69,7 +69,7 @@ const About = () => {
                   <UserCheck className="h-5 w-5" />
                 </span>
                 <p className="leading-relaxed text-foreground/85">
-                  Справочную ведёт аккредитованный инструктор и сертифицированный гид. Поэтому здесь много внимания допуску к работе на трассах, безопасности и тому, как отличить школу курорта от посредника.
+                  Инфокурорт — независимый информационный сервис, не связанный с администрациями курортов. Мы собираем ссылки на первоисточники и помогаем разобраться в форматах занятий. Допуск, квалификацию и условия работы конкретного инструктора нужно проверять у школы или в соответствующем реестре.
                 </p>
               </div>
             </div>
@@ -124,7 +124,7 @@ const About = () => {
                 ))}
               </ul>
             </div>
-            <Button asChild size="lg" className="h-12 rounded-lg px-6 font-semibold">
+            <Button asChild variant="warm" size="lg" className="h-12 rounded-lg px-6 font-semibold">
               <Link to={LEAD_FORM_HREF}>
                 Подобрать инструктора
                 <ArrowRight className="h-4 w-4" />
